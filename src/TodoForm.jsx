@@ -1,8 +1,6 @@
 // TodoForm.jsx (component)
 
-import { useRef } from 'react';
-
-
+import { useRef } from "react";
 
 
 function TodoForm({ onAddTodo }) {
@@ -10,20 +8,20 @@ function TodoForm({ onAddTodo }) {
     const inputRef = useRef();
 
     const handleAddTodo = (event) => {
-        even.preventDefault();
+        event.preventDefault();
     
         const todoTitle = event.target.todoTitle.value.trim();
-        if (todoTitle) {
+
+        if (todoTitle) 
             onAddTodo(todoTitle);
             event.target.reset();
             inputRef.current.focus();
-    }
 };
-    
-    
-    return (
+
+return (
        <form onSubmit={handleAddTodo}>
         <label htmlFor="todoTitle">Todo</label>
+
         <input
             ref={inputRef}
             type="text"
@@ -32,6 +30,8 @@ function TodoForm({ onAddTodo }) {
             placeholder={'Todo text'}
             required
         />
+
+
         <button type="submit">
             Add Todo
         </button>
