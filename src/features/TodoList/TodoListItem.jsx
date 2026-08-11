@@ -1,8 +1,5 @@
 // TodoListItem.jsx (component)
 
-
-
-
 function TodoListItem({ todo, onCompleteTodo }) {
     return (
     <li>
