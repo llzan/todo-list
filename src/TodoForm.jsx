@@ -3,15 +3,14 @@
 import { useRef } from "react";
 import { useState } from "react";
 
-const [workingTodoTitle, setWorkingTodoTitle] = useState('');
-
-const handleInputChange = (event) => {
-    setWorkingTodoTitle(event.target.value);
-};
 
 function TodoForm({ onAddTodo }) {
-    
+    const [workingTodoTitle, setWorkingTodoTitle] = useState("");
     const inputRef = useRef();
+
+    const handleInputChange = (event) => {
+    setWorkingTodoTitle(event.target.value);
+};
 
     const handleAddTodo = (event) => {
         event.preventDefault();
@@ -38,11 +37,13 @@ return (
         required
     />  
 
-    <button type="submit" 
-    disabled={workingTodoTitle.trim()}>
+    <button 
+    type="submit" 
+    disabled={!workingTodoTitle.trim()}
+    >
      Add Todo
-        </button>
-       </form>
+    </button>
+    </form>
     );
 }
 
