@@ -2,8 +2,8 @@
 
 import { useRef } from 'react';
 import { useState } from 'react';
-import { TextInputWithLabel } from  './shared/TextInputWithLabel.jsx';
-import { isValidTodoTitle } from '../utils/todoValidation';
+import { TextInputWithLabel } from  './shared/TextInputWithLabel';
+import { isValidTodoTitle } from './utils/todoValidation';
 
 
 function TodoForm({ onAddTodo }) {
@@ -15,42 +15,36 @@ function TodoForm({ onAddTodo }) {
 };
 
     const handleAddTodo = (event) => {
-        event.preventDefault();
-    
-        const todoTitle = workingTodoTitle.trim();
-        if (todoTitle) {
-            onAddTodo(todoTitle);
-            setWorkingTodoTitle('');
-            inputRef.current.focus();
-        }   
+    event.preventDefault();
+
+    if (isValidTodoTitle(workingTodoTitle)) {
+        onAddTodo(workingTodoTitle.trim());
+        setWorkingTodoTitle('');
+        inputRef.current.focus();
+    }
 };
 
 return (
     <form onSubmit={handleAddTodo}>
-    <TextInputWithLabel
-        elementId="todoTitle"
-        labelText="Todo"
-        ref={inputRef}
-        value={workingTodoTitle}
-        onChange={handleInputChange}
-        
-    />
-    <label htmlFor="todoTitle">Todo</label>
-    <input
-        ref={inputRef}
-        type="text"
-        id="todoTitle"
-        name="todoTitle"
-        placeholder={'Todo text'}
-        value={workingTodoTitle}
-        onChange={handleInputChange}
-        required
-    />  
+        <TextInputWithLabel
+            elementId="todoTitle"
+            labelText="Todo"
+            ref={inputRef}
+            value={workingTodoTitle}
+            onChange={handleInputChange}
+            type="text"
+            name="todoTitle"
+            placeholder="Todo text"
+            required
+        />
 
-    <button 
-    type="submit" 
-    disabled={!isValidTodoTitle(workingTodoTitle)}>Add Todo</button>
-    </form>
+        <button
+            type="submit"
+            disabled={!isValidTodoTitle(workingTodoTitle)}
+        >
+        Add Todo
+        </button>
+        </form>
     );
 }
 
