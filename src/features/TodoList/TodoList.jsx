@@ -1,6 +1,6 @@
 // TodoList.jsx (component)
 
-import TodoListItem from '../../TodoListItem';
+import TodoListItem from './TodoListItem';
 
 const TodoList = ({ todoList, onCompleteTodo, onUpdateTodo }) => {
   const filteredTodoList = todoList.filter(todo => !todo.isCompleted);

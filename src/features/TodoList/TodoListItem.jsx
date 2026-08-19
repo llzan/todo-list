@@ -1,8 +1,8 @@
 // TodoListItem.jsx (component)
 
 import { useState, useRef } from 'react';
-import TextInputWithLabel from './shared/TextInputWithLabel';
-import { isValidTodoTitle } from './utils/todoValidation';
+import TextInputWithLabel from '../../shared/TextInputWithLabel';
+import { isValidTodoTitle } from '../../utils/todoValidation';
 
 function TodoListItem({ todo, onCompleteTodo, onUpdateTodo }) {
     const [isEditing, setIsEditing] = useState(false);
@@ -40,7 +40,7 @@ function TodoListItem({ todo, onCompleteTodo, onUpdateTodo }) {
                     <>
                         <TextInputWithLabel
                             elementId={`editTodo${todo.id}`}
-                            labelText="Edit Todo"
+                            labelText="Todo"
                             ref={inputRef}
                             value={workingTitle}
                             onChange={handleEdit}
@@ -54,7 +54,8 @@ function TodoListItem({ todo, onCompleteTodo, onUpdateTodo }) {
                         </button>
 
                         <button
-                            type="submit"
+                            type="button"
+                            onClick={handleUpdate}
                             disabled={!isValidTodoTitle(workingTitle)}
                         >
                             Update
