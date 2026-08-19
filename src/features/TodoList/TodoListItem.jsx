@@ -1,18 +1,61 @@
 // TodoListItem.jsx (component)
 
 import { useState } from "react";
-import TextInputWithLabel from '../shared/TextInputWithLabel';
+import TextInputWithLabel from "../shared/TextInputWithLabel";
+import { isValidTodoTitle } from "../../utils/isValidTodoTitle";
 
-function TodoListItem({ todo, onCompleteTodo }) {
+function TodoListItem({ todo, onCompleteTodo, onUpdateTodo }) {
     const [isEditing, setIsEditing] = useState(false);
+    const [workingTitle, setWorkingTitle] = useState(todo.title);
+
+    function handleEdit(event) {
+        setWorkingTitle(event.target.value);
+    }
+
+    function handleCancel() {
+        setWorkingTitle(todo.title);
+        setIsEditing(false);
+    }
+
+    function handleUpdate(event) {
+        if (!isEditing) return;
+
+        event.preventDefault();
+
+        if (!isValidTodoTitle(workingTitle)) return;
+
+        onUpdateTodo({
+            ...todo,
+            title: workingTitle
+        });
+
+        setIsEditing(false);
+    }
 
     return (
         <li>
-            <form>
+            <form onSubmit={handleUpdate}>
                 {isEditing ? (
-                    <TextInputWithLabel
-                        value={todo.title}
-                    />
+                    <>
+                        <TextInputWithLabel
+                            value={workingTitle}
+                            onChange={handleEdit}
+                        />
+
+                        <button
+                            type="button"
+                            onClick={handleCancel}
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={handleUpdate}
+                        >
+                            Update
+                        </button>
+                    </>
                 ) : (
                     <>
                         <label>
@@ -33,5 +76,7 @@ function TodoListItem({ todo, onCompleteTodo }) {
         </li>
     );
 }
+
+
 
 export default TodoListItem;

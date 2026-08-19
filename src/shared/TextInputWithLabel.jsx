@@ -2,7 +2,7 @@
 
 
 
-function TextInputWithLabel({ 
+function TextInputWithLabel({
     elementId,
     labelText,
     onChange,
