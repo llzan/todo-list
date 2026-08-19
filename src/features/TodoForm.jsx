@@ -32,13 +32,11 @@ return (
             ref={inputRef}
             value={workingTodoTitle}
             onChange={handleInputChange}
-            type="text"
-            name="todoTitle"
-            placeholder="Todo text"
-            required
+            
         />
 
-        <button type="submit"disabled={!isValidTodoTitle(workingTodoTitle)}>Add Todo</button>
+        <button 
+        disabled={!isValidTodoTitle(workingTodoTitle)}>Add Todo</button>
         </form>
     );
 }
