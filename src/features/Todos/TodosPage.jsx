@@ -2,7 +2,7 @@ import TodoList from './TodoList/TodoList';
 import TodoForm from './TodoForm';
 import { useState, useEffect } from 'react';
 
-function TodosPage() {
+function TodosPage({ token }) {
   const [todoList, setTodoList] = useState([]);
   const [error, setError] = useState('');
   const [isTododListLoading, setIsTodoListLoading] = useState(false);
@@ -33,7 +33,7 @@ function TodosPage() {
         }
 
         const data = await response.json();
-        setTodoList(data);
+        setTodoList(data.tasks);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -61,7 +61,7 @@ function TodosPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrfToken,
+          'X-CSRF-TOKEN': token,
         },
         credentials: 'include',
         body: JSON.stringify({
@@ -110,7 +110,7 @@ function TodosPage() {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrfToken,
+          'X-CSRF-TOKEN': token,
         },
         credentials: 'include',
         body: JSON.stringify({
@@ -162,7 +162,7 @@ function TodosPage() {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrfToken,
+          'X-CSRF-TOKEN': token,
         },
         credentials: 'include',
         body: JSON.stringify({
@@ -195,28 +195,30 @@ function TodosPage() {
     }
   };
 
-  return (
-    <div>
-      <h1>Todo List</h1>
+ return (
+  <div>
+    <h1>Todo List</h1>
 
-      <TodoList
-        todoList={todoList}
-        onCompleteTodo={completeTodo}
-        onUpdateTodo={updateTodo}
-      />
-      {isTodoListLoading && <p>Loading todos...</p>}
-      {error && (
-        <div>
+    {isTodoListLoading && <p>Loading todos...</p>}
+
+    {error && (
+      <div>
         <p>{error}</p>
         <button onClick={() => setError('')}>
-        Clear Error
+          Clear Error
         </button>
-        </div>
-      )}
+      </div>
+    )}
 
-      <TodoForm onAddTodo={addTodo} />
-    </div>
-  );
+    <TodoForm onAddTodo={addTodo} />
+
+    <TodoList
+      todoList={todoList}
+      onCompleteTodo={completeTodo}
+      onUpdateTodo={updateTodo}
+    />
+  </div>
+);
 }
 
 export default TodosPage;

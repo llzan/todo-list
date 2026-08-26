@@ -2,7 +2,7 @@ import './App.css';
 import { useState } from 'react';
 import Header from './shared/Header';
 import TodosPage from './features/Todos/TodosPage';
-import Logon from './features/Todos/Logon';
+import Logon from './features/Logon';
 
 function App() {
   const [email, setEmail] = useState('');
