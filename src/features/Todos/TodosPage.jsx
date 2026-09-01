@@ -1,10 +1,9 @@
 import TodoList from './TodoList/TodoList';
 import TodoForm from './TodoForm';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import SortBy from '../../shared/SortBy';
 import FilterInput from '../../shared/FilterInput';
 import useDebounce from '../../utils/useDebounce';
-import { useCallback } from 'react';
 
 function TodosPage({ token }) {
   const [todoList, setTodoList] = useState([]);
@@ -22,7 +21,7 @@ function TodosPage({ token }) {
   
 
   const invalidateCache = useCallback(() => {
-    
+
     setDataVersion((prevVersion) => prevVersion + 1);
   }, []);
 
@@ -66,7 +65,7 @@ function TodosPage({ token }) {
       } catch (error) {
         if (debouncedFilterTerm || 
         sortBy !== 'createdAt' || 
-        ortDirection !== 'desc') {
+        sortDirection !== 'desc') {
           setFilterError(`Error filtering/sorting todos: ${error.message}`);
         } else {
           setError(`Error fetching todos: ${error.message}`);
