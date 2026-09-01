@@ -87,11 +87,8 @@ function TodosPage({ token }) {
       isCompleted: false,
     };
 
-   
     setTodoList((previous) => [newTodo, ...previous]);
-    previous.map((todo) => (todo.id === tempId ? savedTodo :todo)
-  );
-    invalidateCache(); 
+   
 
     try {
       const response = await fetch('/api/tasks', {
@@ -112,13 +109,13 @@ function TodosPage({ token }) {
       }
 
       const savedTodo = await response.json();
-
-      
       setTodoList((previous) =>
         previous.map((todo) =>
           todo.id === newTodo.id ? savedTodo : todo
         )
       );
+      invalidateCache();
+
     } catch (error) {
       
       setTodoList((previous) =>
@@ -195,7 +192,6 @@ function TodosPage({ token }) {
           : todo
       )
     );
-    invalidateCache();
 
     try {
       const response = await fetch(`/api/tasks/${editedTodo.id}`, {
@@ -223,6 +219,8 @@ function TodosPage({ token }) {
           todo.id === editedTodo.id ? updatedTodo : todo
         )
       );
+      invalidateCache();
+
     } catch (error) {
     
       setTodoList((previous) =>
@@ -280,7 +278,7 @@ function TodosPage({ token }) {
 
     <FilterInput
       filterTerm={filterTerm}
-      onFilterTextChange={handleFilterChange}
+      onFilterChange={handleFilterChange}
     />
 
     <TodoForm onAddTodo={addTodo} />

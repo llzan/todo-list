@@ -24,7 +24,7 @@ const TodoList = ({ todoList, onCompleteTodo, onUpdateTodo, dataVersion }) => {
             todo={todo}
             onCompleteTodo={onCompleteTodo}
             onUpdateTodo={onUpdateTodo}
-            dataVersion={dataVersion}
+            
           />
         ))}
       </ul>

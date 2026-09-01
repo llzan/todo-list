@@ -7,12 +7,12 @@ function SortBy({
     onSortDirectionChange,
   }) {
     return (
-      <div className="sort-by">
-        <label htmlFor="sort-by">Sort by</label>
+      <div className="sortBy">
+        <label htmlFor="sortBy">Sort by</label>
         <select
-          id="sort-by"
+          id="sortBy"
           value={sortBy}
-          onChange={(e) => onSortByChange(e.target.value)}
+          onChange={(event) => onSortByChange(event.target.value)}
         >
           <option value="createdAt">Created At</option>
           <option value="title">Title</option>
@@ -20,9 +20,9 @@ function SortBy({
 
         <label htmlFor="sortDirection">Order</label>
         <select
-          id="sort-direction"
+          id="sortDirection"
           value={sortDirection}
-          onChange={(e) => onSortDirectionChange(e.target.value)}
+          onChange={(event) => onSortDirectionChange(event.target.value)}
         >
           <option value="asc">Ascending</option>
           <option value="desc">Descending</option>
