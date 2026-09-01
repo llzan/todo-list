@@ -1,7 +1,7 @@
 // FilterInput.jsx Component
 
 
-function FilterInput({ filterTerm, onFilterTextChange }) {
+function FilterInput({ filterTerm, onFilterChange }) {
 
     return (
         <div>
@@ -10,7 +10,7 @@ function FilterInput({ filterTerm, onFilterTextChange }) {
                 id="filterInput"
                 type="text"
                 value={filterTerm}
-                onChange={(e) => onFilterTextChange(e.target.value)}
+                onChange={(event) => onFilterChange(event.target.value)}
                 placeholder="Search by title..."
             />
         </div>
