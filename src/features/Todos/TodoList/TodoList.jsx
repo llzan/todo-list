@@ -5,8 +5,6 @@ import { useMemo } from 'react';
 
 const TodoList = ({ todoList, onCompleteTodo, onUpdateTodo, dataVersion }) => {
   const filteredTodoList = useMemo(() => {
-    console.log(`Recalculating filtered todos (v${dataVersion})`);
-    
     return {
       version: dataVersion,
       todos: todoList.filter(todo => !todo.isCompleted),

@@ -9,7 +9,7 @@ import { useCallback } from 'react';
 function TodosPage({ token }) {
   const [todoList, setTodoList] = useState([]);
   const [error, setError] = useState('');
-  const [isTododListLoading, setIsTodoListLoading] = useState(false);
+  const [isTodoListLoading, setIsTodoListLoading] = useState(false);
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortDirection, setSortDirection] = useState('desc');
   const [filterTerm, setFilterTerm] = useState('');
@@ -63,9 +63,10 @@ function TodosPage({ token }) {
         const data = await response.json();
         setTodoList(data.tasks);
         setFilterError('');
-      } 
-        catch (error) {
-        if (debouncedFilterTerm || sortBy !== 'createdAt' || sortDirection !== 'desc') {
+      } catch (error) {
+        if (debouncedFilterTerm || 
+        sortBy !== 'createdAt' || 
+        ortDirection !== 'desc') {
           setFilterError(`Error filtering/sorting todos: ${error.message}`);
         } else {
           setError(`Error fetching todos: ${error.message}`);
