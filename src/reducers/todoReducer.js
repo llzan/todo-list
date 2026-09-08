@@ -35,7 +35,7 @@ export const TODO_ACTIONS = {
 export const initialTodoState = {
     todoList: [],
     error: "",
-    isTodoListLoading: false,
+    isTodoListLoading: true,
     sortBy: "createdAt",
     sortDirection: "desc",
     filterTerm: "",
@@ -67,14 +67,7 @@ export function todoReducer(state, action) {
                 error: '',
                 filterError: '',
             };
-        case TODO_ACTIONS.FETCH_SUCCESS:
-            return {
-                ...state,
-                todoList: action.payload.todos,
-                isTodoListLoading: false,
-                error: '',
-                filterError: '',
-            };
+
         case TODO_ACTIONS.FETCH_ERROR:
             return {
                 ...state,
@@ -104,7 +97,7 @@ export function todoReducer(state, action) {
             return {
                 ...state,
                 todoList: state.todoList.filter((todo) => todo.id !== action.payload.tempId),
-                error: 'Failed to add todo. Please try again.', 
+                error: action.payload.message,
             };
         
         // Complete todo operations
@@ -120,7 +113,7 @@ export function todoReducer(state, action) {
         case TODO_ACTIONS.COMPLETE_TODO_SUCCESS:
             return {
                 ...state,
-                todoList: state.todolist.map((todo) =>
+                todoList: state.todoList.map((todo) =>
                     todo.id === action.payload.id ? action.payload.todo : todo),
                 error: '',
                 dataVersion: state.dataVersion + 1,
@@ -128,7 +121,7 @@ export function todoReducer(state, action) {
         case TODO_ACTIONS.COMPLETE_TODO_ERROR:
             return {
                 ...state,
-                todoList: state.todolist.map((todo) =>
+                todoList: state.todoList.map((todo) =>
                     todo.id === action.payload.originalTodo.id ? action.payload.originalTodo : todo
                 ),
                 error: action.payload.message,
@@ -143,6 +136,7 @@ export function todoReducer(state, action) {
                     todo.id === action.payload.todo.id ? { ...action.payload.todo } : todo
                 ),
                 error: '',
+                dataVersion: state.dataVersion + 1,
             };
         case TODO_ACTIONS.UPDATE_TODO_SUCCESS:
             return {

@@ -10,15 +10,13 @@ function App() {
 
   return (
     <>
-      <Header>
-        {/* header gets authentication state from Context */}
-      </Header>
+      <Header />
+      {/* header gets authentication state from Context */}
 
       {/* show TodosPage when logged in, otherwise shows logon */}
       {isAuthenticated ? <TodosPage /> : <Logon />}
     </>
   );
 }
-  
-  
+
 export default App;

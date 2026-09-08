@@ -16,14 +16,15 @@ export function useAuth() {
 }
 
 // AuthProvider manages shared authentication state and provides it to child components
+
 export function AuthProvider({ children }) {
     // State for authenticaiton
     const [email, setEmail] = useState('');
     const [token, setToken] = useState('');
 
     // functions will go here...
-    // login function
 
+    // login function
     const login = async (userEmail, password) => {
         try {
             const options = {
@@ -55,6 +56,46 @@ export function AuthProvider({ children }) {
             };
         }
     };
+
+    // Logout Function
+    const logout = async () => {
+        if (!token) {
+            setEmail('');
+            setToken('');
+
+            return {success: true };
+        }
+         try {
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': token,
+                },
+                credentials: 'include',
+            };
+
+            const re =await fetch('/api/user/logoff', options)
+
+            if (res.ok) {
+                return {success: true};
+            }
+            const data = await res.json().catch(() => ({}));
+
+            return {
+                success: false,
+                error: data?.message || 'Logout failed'
+            };
+         } catch (error) {
+            return {
+                success: false,
+                error: 'Network error during logout',
+            };
+         } finally {
+            setEmail('');
+            setToken('');
+         }
+    }
 
     // context value object
     const value = {
