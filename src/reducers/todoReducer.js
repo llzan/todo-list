@@ -32,10 +32,10 @@ export const TODO_ACTIONS = {
 // Consolidated single state object
 // all eight pieces of the state from TodosPage.jsx are now stored in one object
 
-export const initialState = {
+export const initialTodoState = {
     todoList: [],
     error: "",
-    isTodoListLoading: true,
+    isTodoListLoading: false,
     sortBy: "createdAt",
     sortDirection: "desc",
     filterTerm: "",
@@ -47,13 +47,8 @@ export const initialState = {
 export function todoReducer(state, action) {
     console.log('Dispatched action:', action.type, action.payload); // remove this before committing
 
-    switch (action.type) {
-    // ... your cases
-    }
-
-
     
-    switch(action.type) {
+    switch (action.type) {
         // Fetch operations
         
         case TODO_ACTIONS.FETCH_START:

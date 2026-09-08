@@ -1,6 +1,10 @@
+// Header,jsx
 
+import { useAuth } from '../contexts/AuthContext';
 
-function Header({ token, onSetToken, onSetEmail }) {
+function Header() {
+  const { isAuthenticated } = useAuth();
+  
   return (
     <header>
       <h1>Todo List</h1>

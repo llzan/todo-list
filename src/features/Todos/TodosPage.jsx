@@ -4,6 +4,7 @@ import { useEffect, useCallback, useReducer } from 'react';
 import SortBy from '../../shared/SortBy';
 import FilterInput from '../../shared/FilterInput';
 import useDebounce from '../../utils/useDebounce';
+import { useAuth } from '../../contexts/AuthContext';
 
 import {
   todoReducer,
@@ -11,7 +12,9 @@ import {
   TODO_ACTIONS,
 } from '../../reducers/todoReducer';
 
-function TodosPage({ token }) {
+function TodosPage() {
+
+  const  { token } = useAuth();
   // One reducer replaces the 8 useState calls
   const [state, dispatch] = useReducer(
     todoReducer,
@@ -126,6 +129,7 @@ function TodosPage({ token }) {
     sortBy,
     sortDirection,
     debouncedFilterTerm,
+    dataVersion
   ]);
 
   // Add a new todo
