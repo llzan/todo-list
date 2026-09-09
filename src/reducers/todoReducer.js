@@ -26,7 +26,7 @@ export const TODO_ACTIONS = {
     SET_SORT: 'SET_SORT',
     SET_FILTER: 'SET_FILTER',
     CLEAR_ERROR: 'CLEAR_ERROR',
-    CLEAR_FILTER_ERROR: 'CLEAR_FILTER-ERROR',
+    CLEAR_FILTER_ERROR: 'CLEAR_FILTER_ERROR',
     RESET_FILTERS: 'RESET_FILTERS',
 };
 
@@ -46,7 +46,7 @@ export const initialTodoState = {
 // the reducer receives the current state and an action
 // it returns a new state based on the action type and payload
 export function todoReducer(state, action) {
-    console.log('Dispatched action:', action.type, action.payload); // remove this before committing
+   
 
     
     switch (action.type) {
@@ -194,6 +194,7 @@ export function todoReducer(state, action) {
                 filterTerm: '',
                 sortBy: 'createdAt',
                 sortDirection: 'asc',
+                error: '',
                 filterError: '',
             };
         

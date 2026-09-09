@@ -8,7 +8,7 @@ const AuthContext = createContext();
 // custom hook with error checking
 export function useAuth() {
     const context = useContext(AuthContext);
-    console.log('Auth context:', context); // remove this later
+   
     if (!context) {
         throw new Error("useAuth must be used within an AuthProvider");
     }
