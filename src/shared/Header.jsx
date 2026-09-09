@@ -8,8 +8,6 @@ function Header() {
   return (
     <header>
       <h1>Todo List</h1>
-
-      {isAuthenticated && <p>Get Organized!</p>}
     </header>
   );
 }

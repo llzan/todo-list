@@ -186,7 +186,7 @@ function TodosPage() {
 
   // Complete a todo
   const completeTodo = async (id) => {
-    // Save the original todo for rollback
+    
     const originalTodo = todoList.find(
       (todo) => todo.id === id
     );
@@ -227,7 +227,6 @@ function TodosPage() {
         },
       });
 
-      
     } catch (error) {
       // Roll back to the original todo
       dispatch({
@@ -293,6 +292,7 @@ function TodosPage() {
       dispatch({
         type: TODO_ACTIONS.UPDATE_TODO_ERROR,
         payload: {
+          id: editedTodo.id,
           originalTodo,
           message: 'Failed to update todo. Please try again.',
         },
