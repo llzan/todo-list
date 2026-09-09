@@ -70,13 +70,20 @@ export function todoReducer(state, action) {
             };
 
         case TODO_ACTIONS.FETCH_ERROR:
+            if (action.payload.isFilterError) {
+                return {
+                     ...state,
+                     isTodoListLoading: false,
+                     error: '',
+                    filterError: action.payload.message,
+            };
+        } 
             return {
                 ...state,
                 isTodoListLoading: false,
-                ...(action.payload.isFilterError
-                    ? {filterError: action.payload.message}
-                    : {error: action.payload.message}),
-            };
+                error: action.payload.message,
+                 filterError: '',
+    };
         // Add todo operations
 
         case TODO_ACTIONS.ADD_TODO_START:
@@ -136,6 +143,7 @@ export function todoReducer(state, action) {
                 ),
                 isTodoListLoading: false,
                 error: action.payload.message,
+                filterError: '',
             };
         
         // Update todo operations
@@ -167,11 +175,13 @@ export function todoReducer(state, action) {
                 ...state,
                 todoList: state.todoList.map((todo) =>
                     todo.id === action.payload.id 
-                ? action.payload.originalTodo 
-                : todo
+                        ? action.payload.originalTodo 
+                        : todo
                 ),
                 isTodoListLoading: false,
                 error: action.payload.message,
+                filterError: '',
+
             };
         
         // UI operations
@@ -197,7 +207,6 @@ export function todoReducer(state, action) {
             return {
                 ...state,
                 error: '',
-                filterError: '',
             };
         // CLEAR FILTER ERROR
         case TODO_ACTIONS.CLEAR_FILTER_ERROR:
