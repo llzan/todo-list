@@ -34,7 +34,7 @@ export function AuthProvider({ children }) {
                 credentials: 'include',
             };
 
-            const res = await fetch('/api/users/login', options);
+            const res = await fetch('/api/users/logon', options);
             const data = await res.json();
 
             if (res.status === 200 && data.name && data.csrfToken) {
@@ -75,7 +75,7 @@ export function AuthProvider({ children }) {
                 credentials: 'include',
             };
 
-            const re =await fetch('/api/user/logoff', options)
+            const res = await fetch('/api/user/logoff', options)
 
             if (res.ok) {
                 return {success: true};

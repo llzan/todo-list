@@ -26,6 +26,7 @@ export const TODO_ACTIONS = {
     SET_SORT: 'SET_SORT',
     SET_FILTER: 'SET_FILTER',
     CLEAR_ERROR: 'CLEAR_ERROR',
+    CLEAR_FILTER_ERROR: 'CLEAR_FILTER-ERROR',
     RESET_FILTERS: 'RESET_FILTERS',
 };
 
@@ -37,7 +38,7 @@ export const initialTodoState = {
     error: "",
     isTodoListLoading: true,
     sortBy: "createdAt",
-    sortDirection: "desc",
+    sortDirection: "asc",
     filterTerm: "",
     dataVersion: 0,
     filterError: "",
@@ -162,7 +163,9 @@ export function todoReducer(state, action) {
             return {
                 ...state,
                 sortBy: action.payload.sortBy,
-                sortDirection: action.payload.sortDirection,    
+                sortDirection: action.payload.sortDirection,  
+                error: '',
+                filterError: '',  
             };
         // FILTER
         case TODO_ACTIONS.SET_FILTER:
@@ -178,13 +181,19 @@ export function todoReducer(state, action) {
                 error: '',
                 filterError: '',
             };
+        // CLEAR FILTER ERROR
+        case TODO_ACTIONS.CLEAR_FILTER_ERROR:
+            return {
+                ...state,
+                filterError: '',
+            };
         // RESET FILTERS
         case TODO_ACTIONS.RESET_FILTERS:
             return {
                 ...state,
                 filterTerm: '',
                 sortBy: 'createdAt',
-                sortDirection: 'desc',
+                sortDirection: 'asc',
                 filterError: '',
             };
         

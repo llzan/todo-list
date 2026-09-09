@@ -1,6 +1,6 @@
 import TodoList from './TodoList/TodoList';
 import TodoForm from './TodoForm';
-import { useEffect, useCallback, useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import SortBy from '../../shared/SortBy';
 import FilterInput from '../../shared/FilterInput';
 import useDebounce from '../../utils/useDebounce';
@@ -45,13 +45,6 @@ function TodosPage() {
       },
     });
   };
-
-  // Update dataVersion using dispatch
-  const invalidateCache = useCallback(() => {
-    dispatch({
-      type: TODO_ACTIONS.INVALIDATE_CACHE,
-    });
-  }, []);
 
   // Fetch todos when the token, sort, or filter changes
   useEffect(() => {
@@ -103,7 +96,7 @@ function TodosPage() {
         const isFilterError =
           Boolean(debouncedFilterTerm) ||
           sortBy !== 'createdAt' ||
-          sortDirection !== 'desc';
+          sortDirection !== 'asc';
 
         // Handle the error through the reducer
         dispatch({
@@ -178,7 +171,7 @@ function TodosPage() {
         },
       });
 
-      invalidateCache();
+      
     } catch (error) {
       // Roll back optimistic update if API fails
       dispatch({
@@ -234,7 +227,7 @@ function TodosPage() {
         },
       });
 
-      invalidateCache();
+      
     } catch (error) {
       // Roll back to the original todo
       dispatch({
@@ -294,7 +287,7 @@ function TodosPage() {
         },
       });
 
-      invalidateCache();
+      
     } catch (error) {
       // Roll back to original todo
       dispatch({
