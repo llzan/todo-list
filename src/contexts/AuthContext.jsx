@@ -46,7 +46,9 @@ export function AuthProvider({ children }) {
                 // failure: return error message
                 return {
                     success: false,
-                    error: `Authentication failed: ${data?.message}`,
+                    error: data?.message
+                        ? `Authentication failed: ${data.message}`
+                        : 'Authentication failed',
                 };
             }
         } catch (error) {
@@ -70,7 +72,7 @@ export function AuthProvider({ children }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-Token': token,
+                    'X-CSRF-TOKEN': token,
                 },
                 credentials: 'include',
             };
@@ -78,7 +80,7 @@ export function AuthProvider({ children }) {
             const res = await fetch('/api/user/logoff', options)
 
             if (res.ok) {
-                return {success: true};
+                return { success: true };
             }
             const data = await res.json().catch(() => ({}));
 
@@ -95,7 +97,7 @@ export function AuthProvider({ children }) {
             setEmail('');
             setToken('');
          }
-    }
+    };
 
     // context value object
     const value = {

@@ -12,7 +12,9 @@ function Logoff() {
 
     if (!result.success) {
       setAuthError(result.error);
+      return;
     }
+      setAuthError(''); 
   };
 
   return (

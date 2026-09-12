@@ -8,20 +8,18 @@ import { useAuth } from '../../contexts/AuthContext';
 
 import {
   todoReducer,
-  initialTodoState,
+  initialState,
   TODO_ACTIONS,
 } from '../../reducers/todoReducer';
 
 function TodosPage() {
+  const { token } = useAuth();
 
-  const  { token } = useAuth();
-  // One reducer replaces the 8 useState calls
   const [state, dispatch] = useReducer(
     todoReducer,
-    initialTodoState
+    initialState
   );
 
-  // Get individual values from our reducer state
   const {
     todoList,
     error,
@@ -33,10 +31,10 @@ function TodosPage() {
     filterError,
   } = state;
 
-  // Derived value - does not need to be in the reducer
   const debouncedFilterTerm = useDebounce(filterTerm, 300);
 
-  // Update the filter using dispatch
+  // Filter
+
   const handleFilterChange = (newTerm) => {
     dispatch({
       type: TODO_ACTIONS.SET_FILTER,
@@ -46,10 +44,11 @@ function TodosPage() {
     });
   };
 
-  // Fetch todos when the token, sort, or filter changes
+
+  // Fetch todos
+
   useEffect(() => {
     const fetchTodos = async () => {
-      // Start loading
       dispatch({
         type: TODO_ACTIONS.FETCH_START,
       });
@@ -75,7 +74,7 @@ function TodosPage() {
         });
 
         if (response.status === 401) {
-          throw new Error('unauthorized');
+          throw new Error('Unauthorized');
         }
 
         if (!response.ok) {
@@ -84,21 +83,18 @@ function TodosPage() {
 
         const data = await response.json();
 
-        // Successful fetch
         dispatch({
           type: TODO_ACTIONS.FETCH_SUCCESS,
           payload: {
-            todos: data,
+            todos: data.tasks,
           },
         });
       } catch (error) {
-        // Determine whether this is a filter/sort error
         const isFilterError =
           Boolean(debouncedFilterTerm) ||
           sortBy !== 'createdAt' ||
-          sortDirection !== 'asc';
+          sortDirection !== 'desc';
 
-        // Handle the error through the reducer
         dispatch({
           type: TODO_ACTIONS.FETCH_ERROR,
           payload: {
@@ -109,9 +105,6 @@ function TodosPage() {
           },
         });
       }
-
-      // No finally block is needed.
-      // FETCH_SUCCESS and FETCH_ERROR both stop loading.
     };
 
     if (token) {
@@ -122,10 +115,12 @@ function TodosPage() {
     sortBy,
     sortDirection,
     debouncedFilterTerm,
-    dataVersion
+    dataVersion,
   ]);
 
-  // Add a new todo
+
+  // Add todo
+
   const addTodo = async (todoTitle) => {
     const newTodo = {
       id: Date.now(),
@@ -133,8 +128,7 @@ function TodosPage() {
       isCompleted: false,
     };
 
-    // Optimistic update:
-    // show the todo immediately before the API responds
+    // Optimistic update
     dispatch({
       type: TODO_ACTIONS.ADD_TODO_START,
       payload: {
@@ -162,7 +156,6 @@ function TodosPage() {
 
       const savedTodo = await response.json();
 
-      // Replace temporary todo with server version
       dispatch({
         type: TODO_ACTIONS.ADD_TODO_SUCCESS,
         payload: {
@@ -170,10 +163,8 @@ function TodosPage() {
           todo: savedTodo,
         },
       });
-
-      
     } catch (error) {
-      // Roll back optimistic update if API fails
+      // Roll back optimistic update
       dispatch({
         type: TODO_ACTIONS.ADD_TODO_ERROR,
         payload: {
@@ -184,14 +175,19 @@ function TodosPage() {
     }
   };
 
-  // Complete a todo
+ 
+  // Complete todo
+
   const completeTodo = async (id) => {
-    
     const originalTodo = todoList.find(
       (todo) => todo.id === id
     );
 
-    // Optimistically mark the todo as completed
+    if (!originalTodo) {
+      return;
+    }
+
+    // Optimistic update
     dispatch({
       type: TODO_ACTIONS.COMPLETE_TODO_START,
       payload: {
@@ -218,7 +214,6 @@ function TodosPage() {
 
       const updatedTodo = await response.json();
 
-      // Replace optimistic version with server version
       dispatch({
         type: TODO_ACTIONS.COMPLETE_TODO_SUCCESS,
         payload: {
@@ -226,9 +221,8 @@ function TodosPage() {
           todo: updatedTodo,
         },
       });
-
     } catch (error) {
-      // Roll back to the original todo
+      // Roll back optimistic update
       dispatch({
         type: TODO_ACTIONS.COMPLETE_TODO_ERROR,
         payload: {
@@ -240,14 +234,19 @@ function TodosPage() {
     }
   };
 
-  // Update a todo
+  
+  // Update todo
+
   const updateTodo = async (editedTodo) => {
-    // Save the original todo for rollback
     const originalTodo = todoList.find(
       (todo) => todo.id === editedTodo.id
     );
 
-    // Optimistically update the todo
+    if (!originalTodo) {
+      return;
+    }
+
+    // Optimistic update
     dispatch({
       type: TODO_ACTIONS.UPDATE_TODO_START,
       payload: {
@@ -278,17 +277,14 @@ function TodosPage() {
 
       const updatedTodo = await response.json();
 
-      // Replace optimistic version with server version
       dispatch({
         type: TODO_ACTIONS.UPDATE_TODO_SUCCESS,
         payload: {
           todo: updatedTodo,
         },
       });
-
-      
     } catch (error) {
-      // Roll back to original todo
+      // Roll back optimistic update
       dispatch({
         type: TODO_ACTIONS.UPDATE_TODO_ERROR,
         payload: {
@@ -299,6 +295,9 @@ function TodosPage() {
       });
     }
   };
+
+ 
+  // Render
 
   return (
     <div>
@@ -353,8 +352,6 @@ function TodosPage() {
       <SortBy
         sortBy={sortBy}
         sortDirection={sortDirection}
-
-        // Sorting is handled by the reducer
         onSortByChange={(newSortBy) =>
           dispatch({
             type: TODO_ACTIONS.SET_SORT,
@@ -364,7 +361,6 @@ function TodosPage() {
             },
           })
         }
-
         onSortDirectionChange={(newSortDirection) =>
           dispatch({
             type: TODO_ACTIONS.SET_SORT,
