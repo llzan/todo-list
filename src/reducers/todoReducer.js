@@ -27,7 +27,7 @@ export const TODO_ACTIONS = {
   RESET_FILTERS: 'RESET_FILTERS',
 };
 
-export const initialState = {
+export const initialTodoState = {
   todoList: [],
   error: '',
   filterError: '',
@@ -36,6 +36,10 @@ export const initialState = {
   sortDirection: 'asc',
   filterTerm: '',
   dataVersion: 0,
+
+  // for optimistic rollback
+  rollbackTodo: null,
+  rollbackTempId: null,
 };
 
 export function todoReducer(state, action) {
@@ -87,6 +91,7 @@ export function todoReducer(state, action) {
           action.payload.todo,
           ...state.todoList,
         ],
+        rollbackTempId: action.payload.todo.id,
         error: '',
       };
 
@@ -98,6 +103,7 @@ export function todoReducer(state, action) {
             ? action.payload.todo
             : todo
         ),
+        rollbackTempId: null,
         error: '',
         dataVersion: state.dataVersion + 1,
       };
@@ -106,8 +112,9 @@ export function todoReducer(state, action) {
       return {
         ...state,
         todoList: state.todoList.filter(
-          (todo) => todo.id !== action.payload.tempId
+          (todo) => todo.id !== state.rollbackTempId
         ),
+        rollbackTempId: null,
         error: action.payload.message,
       };
 
@@ -115,16 +122,22 @@ export function todoReducer(state, action) {
     // COMPLETE
     
 
-    case TODO_ACTIONS.COMPLETE_TODO_START:
-      return {
+    case TODO_ACTIONS.COMPLETE_TODO_START: {
+        const originalTodo = state.todoList.find(
+            (todo) => todo.id === action.payload.id
+        );
+    
+        return {
         ...state,
         todoList: state.todoList.map((todo) =>
           todo.id === action.payload.id
             ? { ...todo, isCompleted: true }
             : todo
         ),
+        rollbackTodo: originalTodo || null,
         error: '',
       };
+    }
 
     case TODO_ACTIONS.COMPLETE_TODO_SUCCESS:
       return {
@@ -134,6 +147,7 @@ export function todoReducer(state, action) {
             ? action.payload.todo
             : todo
         ),
+        rollbackTodo: null,
         error: '',
         dataVersion: state.dataVersion + 1,
       };
@@ -142,10 +156,12 @@ export function todoReducer(state, action) {
       return {
         ...state,
         todoList: state.todoList.map((todo) =>
-          todo.id === action.payload.id
-            ? action.payload.originalTodo
+          todo.id === action.payload.id && state.rollbackTodo
+            ? state.rollbackTodo
             : todo
+            
         ),
+        rollbackTodo: null,
         error: action.payload.message,
       };
 
@@ -153,16 +169,22 @@ export function todoReducer(state, action) {
     // UPDATE
    
 
-    case TODO_ACTIONS.UPDATE_TODO_START:
-      return {
+    case TODO_ACTIONS.UPDATE_TODO_START: {
+        const originalTodo = state.todoList.find(
+        (todo) => todo.id === action.payload.todo.id
+        );
+    
+        return {
         ...state,
         todoList: state.todoList.map((todo) =>
           todo.id === action.payload.todo.id
             ? action.payload.todo
             : todo
         ),
+        rollbackTodo: originalTodo || null,
         error: '',
       };
+    }
 
     case TODO_ACTIONS.UPDATE_TODO_SUCCESS:
       return {
@@ -172,6 +194,7 @@ export function todoReducer(state, action) {
             ? action.payload.todo
             : todo
         ),
+        rollbackTodo: null,
         error: '',
         dataVersion: state.dataVersion + 1,
       };
@@ -180,10 +203,11 @@ export function todoReducer(state, action) {
       return {
         ...state,
         todoList: state.todoList.map((todo) =>
-          todo.id === action.payload.originalTodo.id
-            ? action.payload.originalTodo
+          todo.id === action.payload.id && state.rollbackTodo
+            ? state.rollbackTodo
             : todo
         ),
+        rollbackTodo: null,
         error: action.payload.message,
       };
 
@@ -202,6 +226,7 @@ export function todoReducer(state, action) {
       return {
         ...state,
         filterTerm: action.payload.filterTerm,
+        error: '',
         filterError: '',
       };
 

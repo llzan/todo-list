@@ -8,7 +8,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 import {
   todoReducer,
-  initialState,
+  initialTodoState,
   TODO_ACTIONS,
 } from '../../reducers/todoReducer';
 
@@ -17,7 +17,7 @@ function TodosPage() {
 
   const [state, dispatch] = useReducer(
     todoReducer,
-    initialState
+    initialTodoState
   );
 
   const {
@@ -179,13 +179,7 @@ function TodosPage() {
   // Complete todo
 
   const completeTodo = async (id) => {
-    const originalTodo = todoList.find(
-      (todo) => todo.id === id
-    );
-
-    if (!originalTodo) {
-      return;
-    }
+    
 
     // Optimistic update
     dispatch({
@@ -227,7 +221,6 @@ function TodosPage() {
         type: TODO_ACTIONS.COMPLETE_TODO_ERROR,
         payload: {
           id,
-          originalTodo,
           message: 'Failed to complete todo. Please try again.',
         },
       });
@@ -238,13 +231,7 @@ function TodosPage() {
   // Update todo
 
   const updateTodo = async (editedTodo) => {
-    const originalTodo = todoList.find(
-      (todo) => todo.id === editedTodo.id
-    );
-
-    if (!originalTodo) {
-      return;
-    }
+    
 
     // Optimistic update
     dispatch({
@@ -289,7 +276,6 @@ function TodosPage() {
         type: TODO_ACTIONS.UPDATE_TODO_ERROR,
         payload: {
           id: editedTodo.id,
-          originalTodo,
           message: 'Failed to update todo. Please try again.',
         },
       });
