@@ -8,7 +8,7 @@ const TodoList = ({
   onCompleteTodo,
   onUpdateTodo,
   dataVersion,
-  statusFilter = 'active',
+  statusFilter = 'all',
 }) => {
   const filteredTodoList = useMemo(() => {
     let filteredTodos;
