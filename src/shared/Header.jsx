@@ -1,7 +1,8 @@
-// Header,jsx
+// Header.jsx
 
 import { useAuth } from '../contexts/AuthContext';
 import Logoff from '../features/Logoff';
+import Navigation from './Navigation';
 
 function Header() {
   const { isAuthenticated } = useAuth();
@@ -9,7 +10,10 @@ function Header() {
   return (
     <header>
       <h1>Todo List</h1>
-      {isAuthenticated && <Logoff/>}
+
+      <Navigation />
+
+      {isAuthenticated && <Logoff />}
     </header>
   );
 }
