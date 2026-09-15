@@ -71,6 +71,15 @@
 
 /* TODO SECTION */
 
+.addTodoSection {
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
 .todoSection {
   overflow: hidden;
 

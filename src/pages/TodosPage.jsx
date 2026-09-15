@@ -44,7 +44,10 @@ function TodosPage() {
 
   const debouncedFilterTerm = useDebounce(filterTerm, 300);
 
+  // --------------------------------------------------
   // Filter
+  // --------------------------------------------------
+
   const handleFilterChange = (newTerm) => {
     dispatch({
       type: TODO_ACTIONS.SET_FILTER,
@@ -54,7 +57,10 @@ function TodosPage() {
     });
   };
 
+  // --------------------------------------------------
   // Fetch todos
+  // --------------------------------------------------
+
   useEffect(() => {
     const fetchTodos = async () => {
       dispatch({
@@ -128,7 +134,10 @@ function TodosPage() {
     dataVersion,
   ]);
 
+  // --------------------------------------------------
   // Add todo
+  // --------------------------------------------------
+
   const addTodo = async (todoTitle) => {
     const validation = validateTodoTitle(todoTitle);
 
@@ -198,7 +207,10 @@ function TodosPage() {
     }
   };
 
+  // --------------------------------------------------
   // Complete todo
+  // --------------------------------------------------
+
   const completeTodo = async (id) => {
     // Optimistic update
     dispatch({
@@ -237,7 +249,6 @@ function TodosPage() {
     } catch (error) {
       console.error('Complete todo failed:', error);
 
-      // Roll back optimistic update
       dispatch({
         type: TODO_ACTIONS.COMPLETE_TODO_ERROR,
         payload: {
@@ -248,7 +259,10 @@ function TodosPage() {
     }
   };
 
+  // --------------------------------------------------
   // Update todo
+  // --------------------------------------------------
+
   const updateTodo = async (editedTodo) => {
     const validation = validateTodoTitle(editedTodo.title);
 
@@ -309,7 +323,6 @@ function TodosPage() {
     } catch (error) {
       console.error('Update todo failed:', error);
 
-      // Roll back optimistic update
       dispatch({
         type: TODO_ACTIONS.UPDATE_TODO_ERROR,
         payload: {
@@ -320,10 +333,14 @@ function TodosPage() {
     }
   };
 
+  // --------------------------------------------------
   // Render
+  // --------------------------------------------------
+
   return (
     <main className={styles.todosPage}>
       {/* Page Header */}
+
       <header className={styles.todosHeader}>
         <p className={styles.todosEyebrow}>
           Stay organized
@@ -338,7 +355,18 @@ function TodosPage() {
         </p>
       </header>
 
+      {/* Add Todo */}
+
+      <section className={styles.addTodoSection}>
+        <h2 className={styles.todoSectionTitle}>
+          Add a Todo
+        </h2>
+
+        <TodoForm onAddTodo={addTodo} />
+      </section>
+
       {/* Loading State */}
+
       {isTodoListLoading && (
         <div
           className={`${styles.stateCard} ${styles.loadingState}`}
@@ -354,6 +382,7 @@ function TodosPage() {
       )}
 
       {/* General Error */}
+
       {error && (
         <div
           className={`${styles.stateCard} ${styles.errorState}`}
@@ -367,6 +396,7 @@ function TodosPage() {
 
           <button
             className={styles.secondaryButton}
+            type="button"
             onClick={() =>
               dispatch({
                 type: TODO_ACTIONS.CLEAR_ERROR,
@@ -379,6 +409,7 @@ function TodosPage() {
       )}
 
       {/* Filter Error */}
+
       {filterError && (
         <div
           className={`${styles.stateCard} ${styles.filterErrorState}`}
@@ -393,6 +424,7 @@ function TodosPage() {
           <div className={styles.stateActions}>
             <button
               className={styles.secondaryButton}
+              type="button"
               onClick={() =>
                 dispatch({
                   type: TODO_ACTIONS.CLEAR_FILTER_ERROR,
@@ -404,6 +436,7 @@ function TodosPage() {
 
             <button
               className={styles.primaryButton}
+              type="button"
               onClick={() =>
                 dispatch({
                   type: TODO_ACTIONS.RESET_FILTERS,
@@ -417,11 +450,13 @@ function TodosPage() {
       )}
 
       {/* Controls */}
+
       <section
         className={styles.controlsContainer}
         aria-label="Todo controls"
       >
         {/* Show */}
+
         <div className={styles.controlSection}>
           <h2 className={styles.controlTitle}>
             Show
@@ -431,6 +466,7 @@ function TodosPage() {
         </div>
 
         {/* Search Todos */}
+
         <div className={styles.controlSection}>
           <h2 className={styles.controlTitle}>
             Search Todos
@@ -443,6 +479,7 @@ function TodosPage() {
         </div>
 
         {/* Sort By */}
+
         <div className={styles.controlSection}>
           <h2 className={styles.controlTitle}>
             Sort By
@@ -474,6 +511,7 @@ function TodosPage() {
       </section>
 
       {/* Todo List */}
+
       <section className={styles.todoSection}>
         <h2 className={styles.todoSectionTitle}>
           Todo
