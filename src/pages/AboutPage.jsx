@@ -1,31 +1,55 @@
+import styles from './AboutPage.module.css';
+
 // ABOUT PAGE
 
 function AboutPage() {
   return (
-    <main>
-      <h1>About Our Todo App</h1>
+    <main className={styles.page}>
+      <h1 className={styles.title}>
+        About Todo App
+      </h1>
 
-      <p>
-        Our Todo App helps you organize your tasks, keep track of what needs
+      <p className={styles.description}>
+        Todo App helps you organize your tasks, keep track of what needs
         to be done, and stay productive.
       </p>
 
-      <section>
-        <h2>Features</h2>
-        <ul>
-          <li>Create and manage todo items</li>
-          <li>Track your tasks in one convenient place</li>
-          <li>User authentication and protected pages</li>
-          <li>Responsive and easy-to-use interface</li>
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>
+          Features
+        </h2>
+
+        <ul className={styles.list}>
+          <li className={styles.listItem}>
+            Create and manage todo items
+          </li>
+          <li className={styles.listItem}>
+            Track your tasks in one convenient place
+          </li>
+          <li className={styles.listItem}>
+            User authentication and protected pages
+          </li>
+          <li className={styles.listItem}>
+            Responsive and easy-to-use interface
+          </li>
         </ul>
       </section>
 
-      <section>
-        <h2>Technologies Used</h2>
-        <ul>
-          <li>React - for building the user interface</li>
-          <li>React Router - for navigation and routing</li>
-          <li>Vite - for development and building the application</li>
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>
+          Technologies Used
+        </h2>
+
+        <ul className={styles.list}>
+          <li className={styles.listItem}>
+            React - for building the user interface
+          </li>
+          <li className={styles.listItem}>
+            React Router - for navigation and routing
+          </li>
+          <li className={styles.listItem}>
+            Vite - for development and building the application
+          </li>
         </ul>
       </section>
     </main>

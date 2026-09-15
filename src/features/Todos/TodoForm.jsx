@@ -1,44 +1,86 @@
 // TodoForm.jsx (component)
 
-import { useRef } from 'react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import TextInputWithLabel from '../../shared/TextInputWithLabel';
-import { isValidTodoTitle } from '../../utils/todoValidation';
-
+import {
+  validateTodoTitle,
+  MAX_TODO_TITLE_LENGTH,
+} from '../../utils/todoValidation';
 
 function TodoForm({ onAddTodo }) {
-    const [workingTodoTitle, setWorkingTodoTitle] = useState("");
-    const inputRef = useRef();
+  const [workingTodoTitle, setWorkingTodoTitle] = useState('');
+  const [validationError, setValidationError] = useState('');
 
-    const handleInputChange = (event) => {
-    setWorkingTodoTitle(event.target.value);
-};
+  const inputRef = useRef();
 
-    const handleAddTodo = (event) => {
+  const handleInputChange = (event) => {
+    const value = event.target.value;
+
+    setWorkingTodoTitle(value);
+
+    // Clear the error while the user is correcting the input.
+    if (validationError) {
+      setValidationError('');
+    }
+  };
+
+  const handleAddTodo = (event) => {
     event.preventDefault();
 
-    if (isValidTodoTitle(workingTodoTitle)) {
-        onAddTodo(workingTodoTitle.trim());
-        setWorkingTodoTitle('');
-        inputRef.current.focus();
-    }
-};
-
-return (
-    <form onSubmit={handleAddTodo}>
-        <TextInputWithLabel
-            elementId="todoTitle"
-            labelText="Todo"
-            ref={inputRef}
-            value={workingTodoTitle}
-            onChange={handleInputChange}
-            
-        />
-
-        <button 
-        disabled={!isValidTodoTitle(workingTodoTitle)}>Add Todo</button>
-        </form>
+    const validation = validateTodoTitle(
+      workingTodoTitle
     );
+
+    if (!validation.valid) {
+      setValidationError(validation.error);
+      inputRef.current?.focus();
+      return;
+    }
+
+    onAddTodo(validation.value);
+
+    setWorkingTodoTitle('');
+    setValidationError('');
+
+    inputRef.current?.focus();
+  };
+
+  return (
+    <form onSubmit={handleAddTodo} noValidate>
+      <TextInputWithLabel
+        elementId="todoTitle"
+        labelText="Todo"
+        ref={inputRef}
+        value={workingTodoTitle}
+        onChange={handleInputChange}
+        required
+        maxLength={MAX_TODO_TITLE_LENGTH}
+        aria-invalid={Boolean(validationError)}
+        aria-describedby={
+          validationError
+            ? 'todoTitleError todoTitleCount'
+            : 'todoTitleCount'
+        }
+      />
+
+      <p id="todoTitleCount">
+        {workingTodoTitle.length} / {MAX_TODO_TITLE_LENGTH}
+      </p>
+
+      {validationError && (
+        <p
+          id="todoTitleError"
+          role="alert"
+        >
+          {validationError}
+        </p>
+      )}
+
+      <button type="submit">
+        Add Todo
+      </button>
+    </form>
+  );
 }
 
 export default TodoForm;

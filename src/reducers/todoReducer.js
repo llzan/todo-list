@@ -1,3 +1,5 @@
+// src/reducers/todoReducer.js
+
 export const TODO_ACTIONS = {
   // Fetch
   FETCH_START: 'FETCH_START',
@@ -37,18 +39,16 @@ export const initialTodoState = {
   filterTerm: '',
   dataVersion: 0,
 
-  // for optimistic rollback
+  // For optimistic rollback
   rollbackTodo: null,
   rollbackTempId: null,
 };
 
 export function todoReducer(state, action) {
-  
-
   switch (action.type) {
-  
+    // =========================
     // FETCH
-   
+    // =========================
 
     case TODO_ACTIONS.FETCH_START:
       return {
@@ -81,9 +81,10 @@ export function todoReducer(state, action) {
           : '',
       };
 
-   
+    // =========================
     // ADD
-   
+    // =========================
+
     case TODO_ACTIONS.ADD_TODO_START:
       return {
         ...state,
@@ -111,23 +112,25 @@ export function todoReducer(state, action) {
     case TODO_ACTIONS.ADD_TODO_ERROR:
       return {
         ...state,
-        todoList: state.todoList.filter(
-          (todo) => todo.id !== state.rollbackTempId
-        ),
+        todoList: state.rollbackTempId
+          ? state.todoList.filter(
+              (todo) => todo.id !== state.rollbackTempId
+            )
+          : state.todoList,
         rollbackTempId: null,
         error: action.payload.message,
       };
 
-    
+    // =========================
     // COMPLETE
-    
+    // =========================
 
     case TODO_ACTIONS.COMPLETE_TODO_START: {
-        const originalTodo = state.todoList.find(
-            (todo) => todo.id === action.payload.id
-        );
-    
-        return {
+      const originalTodo = state.todoList.find(
+        (todo) => todo.id === action.payload.id
+      );
+
+      return {
         ...state,
         todoList: state.todoList.map((todo) =>
           todo.id === action.payload.id
@@ -159,22 +162,21 @@ export function todoReducer(state, action) {
           todo.id === action.payload.id && state.rollbackTodo
             ? state.rollbackTodo
             : todo
-            
         ),
         rollbackTodo: null,
         error: action.payload.message,
       };
 
-  
+    // =========================
     // UPDATE
-   
+    // =========================
 
     case TODO_ACTIONS.UPDATE_TODO_START: {
-        const originalTodo = state.todoList.find(
+      const originalTodo = state.todoList.find(
         (todo) => todo.id === action.payload.todo.id
-        );
-    
-        return {
+      );
+
+      return {
         ...state,
         todoList: state.todoList.map((todo) =>
           todo.id === action.payload.todo.id
@@ -211,9 +213,9 @@ export function todoReducer(state, action) {
         error: action.payload.message,
       };
 
-
+    // =========================
     // UI
-
+    // =========================
 
     case TODO_ACTIONS.SET_SORT:
       return {
@@ -253,7 +255,9 @@ export function todoReducer(state, action) {
       };
 
     default:
-      throw new Error(`Unknown action type: ${action.type}`);
+      throw new Error(
+        `Unknown action type: ${action.type}`
+      );
   }
-};
+}
 

@@ -1,0 +1,260 @@
+/* TODO PAGE */
+
+.todosPage {
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 64px 0;
+}
+
+
+/* PAGE HEADER */
+
+.todosHeader {
+  margin-bottom: 40px;
+}
+
+.todosEyebrow {
+  margin-bottom: 8px;
+
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.02em;
+}
+
+.todosTitle {
+  color: var(--color-text);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.todosSubtitle {
+  margin-top: 12px;
+
+  color: var(--color-text-muted);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+}
+
+
+/* CONTROLS */
+
+.controlsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  margin-bottom: 32px;
+}
+
+.controlSection {
+  padding: 20px;
+
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  box-shadow: var(--shadow-sm);
+}
+
+.controlTitle {
+  margin-bottom: 12px;
+
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+
+/* TODO SECTION */
+
+.todoSection {
+  overflow: hidden;
+
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  box-shadow: var(--shadow-sm);
+}
+
+.todoSectionTitle {
+  padding: 20px;
+
+  color: var(--color-text);
+  font-size: 1.125rem;
+  font-weight: 600;
+
+  border-bottom: 1px solid var(--color-border);
+}
+
+
+/* STATES */
+
+.stateCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin-bottom: 24px;
+  padding: 20px;
+
+  border-radius: var(--radius-md);
+}
+
+.stateContent {
+  min-width: 0;
+}
+
+.stateContent strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.stateContent p {
+  color: inherit;
+}
+
+
+/* LOADING STATE */
+
+.loadingState {
+  justify-content: center;
+
+  color: var(--color-text-muted);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.loadingSpinner {
+  width: 20px;
+  height: 20px;
+
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ERROR STATES */
+
+.errorState,
+.filterErrorState {
+  color: #991b1b;
+  background-color: var(--color-danger-light);
+  border: 1px solid #fecaca;
+}
+
+.errorState p,
+.filterErrorState p {
+  color: #b91c1c;
+}
+
+
+/* STATE ACTIONS */
+
+.stateActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+
+/* BUTTONS */
+
+.primaryButton,
+.secondaryButton {
+  padding: 10px 16px;
+
+  border-radius: var(--radius-sm);
+
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+
+  transition:
+    background-color var(--transition),
+    color var(--transition),
+    transform var(--transition);
+}
+
+.primaryButton {
+  color: white;
+  background-color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+}
+
+.primaryButton:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+.secondaryButton {
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.secondaryButton:hover {
+  background-color: var(--color-background);
+  transform: translateY(-1px);
+}
+
+.primaryButton:disabled,
+.secondaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 700px) {
+  .todosPage {
+    padding: 40px 0;
+  }
+
+  .todosTitle {
+    font-size: 1.875rem;
+  }
+}
+
+
+@media (max-width: 480px) {
+  .todosPage {
+    padding: 32px 0;
+  }
+
+  .todosTitle {
+    font-size: 1.625rem;
+  }
+
+  .controlSection {
+    padding: 16px;
+  }
+
+  .stateCard {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .stateActions {
+    width: 100%;
+  }
+
+  .stateActions button {
+    flex: 1;
+  }
+}

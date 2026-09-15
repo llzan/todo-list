@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import styles from './ProfilesPage.module.css';
 
 function ProfilePage() {
   const { email, token } = useAuth();
@@ -47,7 +48,6 @@ function ProfilePage() {
         const data = await response.json();
         const tasks = data.tasks || [];
 
-        // Calculate statistics
         const total = tasks.length;
 
         const completed = tasks.filter(
@@ -79,51 +79,106 @@ function ProfilePage() {
       : 0;
 
   return (
-    <main>
-      <h1>Profile</h1>
-
-      <section>
-        <h2>Account Information</h2>
-
-        <p>
-          <strong>Name:</strong> {email}
+    <main className={styles.page}>
+      <header className={styles.header}>
+        <h1 className={styles.title}>Profile</h1>
+        <p className={styles.subtitle}>
+          View your account information and todo activity.
         </p>
+      </header>
 
-        <p>
-          <strong>Status:</strong> Authenticated
-        </p>
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>
+          Account Information
+        </h2>
+
+        <div className={styles.accountInfo}>
+          <div className={styles.avatar} aria-hidden="true">
+            {email?.charAt(0).toUpperCase()}
+          </div>
+
+          <div>
+            <p className={styles.email}>{email}</p>
+            <p className={styles.status}>
+              <span className={styles.statusDot} />
+              Authenticated
+            </p>
+          </div>
+        </div>
       </section>
 
-      <section>
-        <h2>Todo Statistics</h2>
+      <section className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <div>
+            <h2 className={styles.sectionTitle}>
+              Todo Statistics
+            </h2>
+            <p className={styles.sectionDescription}>
+              A summary of your current tasks.
+            </p>
+          </div>
+        </div>
 
-        {loading && <p>Loading statistics...</p>}
+        {loading && (
+          <p className={styles.message}>
+            Loading statistics...
+          </p>
+        )}
 
         {error && (
-          <p role="alert">{error}</p>
+          <p className={styles.error} role="alert">
+            {error}
+          </p>
         )}
 
         {!loading && !error && (
-          <div>
-            <p>
-              <strong>Total:</strong> {todoStats.total}
-            </p>
+          <>
+            <div className={styles.stats}>
+              <div className={styles.statCard}>
+                <span className={styles.statLabel}>Total</span>
+                <span className={styles.statValue}>
+                  {todoStats.total}
+                </span>
+              </div>
 
-            <p>
-              <strong>Completed:</strong> {todoStats.completed}
-            </p>
+              <div className={styles.statCard}>
+                <span className={styles.statLabel}>Active</span>
+                <span className={styles.statValue}>
+                  {todoStats.active}
+                </span>
+              </div>
 
-            <p>
-              <strong>Active:</strong> {todoStats.active}
-            </p>
+              <div className={styles.statCard}>
+                <span className={styles.statLabel}>Completed</span>
+                <span className={styles.statValue}>
+                  {todoStats.completed}
+                </span>
+              </div>
+            </div>
 
-            {todoStats.total > 0 && (
-              <p>
-                <strong>Completion:</strong>{' '}
-                {completionPercentage}%
-              </p>
-            )}
-          </div>
+            <div className={styles.completion}>
+              <div className={styles.completionHeader}>
+                <span>Completion</span>
+                <strong>{completionPercentage}%</strong>
+              </div>
+
+              <div
+                className={styles.progressTrack}
+                role="progressbar"
+                aria-valuenow={completionPercentage}
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-label="Todo completion"
+              >
+                <div
+                  className={styles.progressBar}
+                  style={{
+                    width: `${completionPercentage}%`,
+                  }}
+                />
+              </div>
+            </div>
+          </>
         )}
       </section>
     </main>

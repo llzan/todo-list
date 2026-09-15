@@ -1,3 +1,5 @@
+import styles from './TodosPage.module.css';
+
 import TodoList from '../features/Todos/TodoList/TodoList';
 import TodoForm from '../features/Todos/TodoForm';
 import { useEffect, useReducer } from 'react';
@@ -14,8 +16,9 @@ import {
   TODO_ACTIONS,
 } from '../reducers/todoReducer';
 
+import { validateTodoTitle } from '../utils/todoValidation';
+
 function TodosPage() {
-  
   const { token } = useAuth();
 
   const [searchParams] = useSearchParams();
@@ -42,7 +45,6 @@ function TodosPage() {
   const debouncedFilterTerm = useDebounce(filterTerm, 300);
 
   // Filter
-
   const handleFilterChange = (newTerm) => {
     dispatch({
       type: TODO_ACTIONS.SET_FILTER,
@@ -52,9 +54,7 @@ function TodosPage() {
     });
   };
 
-
   // Fetch todos
-
   useEffect(() => {
     const fetchTodos = async () => {
       dispatch({
@@ -98,6 +98,8 @@ function TodosPage() {
           },
         });
       } catch (error) {
+        console.error('Todo fetch failed:', error);
+
         const isFilterError =
           Boolean(debouncedFilterTerm) ||
           sortBy !== 'createdAt' ||
@@ -107,8 +109,8 @@ function TodosPage() {
           type: TODO_ACTIONS.FETCH_ERROR,
           payload: {
             message: isFilterError
-              ? `Error filtering/sorting todos: ${error.message}`
-              : `Error fetching todos: ${error.message}`,
+              ? 'Unable to apply your filters. Please try again.'
+              : 'Unable to load your todos. Please try again.',
             isFilterError,
           },
         });
@@ -126,13 +128,24 @@ function TodosPage() {
     dataVersion,
   ]);
 
-
   // Add todo
-
   const addTodo = async (todoTitle) => {
+    const validation = validateTodoTitle(todoTitle);
+
+    if (!validation.valid) {
+      dispatch({
+        type: TODO_ACTIONS.ADD_TODO_ERROR,
+        payload: {
+          message: validation.error,
+        },
+      });
+
+      return;
+    }
+
     const newTodo = {
       id: Date.now(),
-      title: todoTitle,
+      title: validation.value,
       isCompleted: false,
     };
 
@@ -172,23 +185,21 @@ function TodosPage() {
         },
       });
     } catch (error) {
+      console.error('Add todo failed:', error);
+
       // Roll back optimistic update
       dispatch({
         type: TODO_ACTIONS.ADD_TODO_ERROR,
         payload: {
           tempId: newTodo.id,
-          message: 'Failed to add todo. Please try again.',
+          message: 'Unable to add your todo. Please try again.',
         },
       });
     }
   };
 
- 
   // Complete todo
-
   const completeTodo = async (id) => {
-    
-
     // Optimistic update
     dispatch({
       type: TODO_ACTIONS.COMPLETE_TODO_START,
@@ -224,34 +235,51 @@ function TodosPage() {
         },
       });
     } catch (error) {
+      console.error('Complete todo failed:', error);
+
       // Roll back optimistic update
       dispatch({
         type: TODO_ACTIONS.COMPLETE_TODO_ERROR,
         payload: {
           id,
-          message: 'Failed to complete todo. Please try again.',
+          message: 'Unable to complete your todo. Please try again.',
         },
       });
     }
   };
 
-  
   // Update todo
-
   const updateTodo = async (editedTodo) => {
-    
+    const validation = validateTodoTitle(editedTodo.title);
+
+    if (!validation.valid) {
+      dispatch({
+        type: TODO_ACTIONS.UPDATE_TODO_ERROR,
+        payload: {
+          id: editedTodo.id,
+          message: validation.error,
+        },
+      });
+
+      return;
+    }
+
+    const updatedTodo = {
+      ...editedTodo,
+      title: validation.value,
+    };
 
     // Optimistic update
     dispatch({
       type: TODO_ACTIONS.UPDATE_TODO_START,
       payload: {
-        todo: editedTodo,
+        todo: updatedTodo,
       },
     });
 
     try {
       const response = await fetch(
-        `/api/tasks/${editedTodo.id}`,
+        `/api/tasks/${updatedTodo.id}`,
         {
           method: 'PATCH',
           headers: {
@@ -260,8 +288,8 @@ function TodosPage() {
           },
           credentials: 'include',
           body: JSON.stringify({
-            title: editedTodo.title,
-            isCompleted: editedTodo.isCompleted,
+            title: updatedTodo.title,
+            isCompleted: updatedTodo.isCompleted,
           }),
         }
       );
@@ -270,119 +298,196 @@ function TodosPage() {
         throw new Error('Failed to update todo');
       }
 
-      const updatedTodo = await response.json();
+      const savedTodo = await response.json();
 
       dispatch({
         type: TODO_ACTIONS.UPDATE_TODO_SUCCESS,
         payload: {
-          todo: updatedTodo,
+          todo: savedTodo,
         },
       });
     } catch (error) {
+      console.error('Update todo failed:', error);
+
       // Roll back optimistic update
       dispatch({
         type: TODO_ACTIONS.UPDATE_TODO_ERROR,
         payload: {
-          id: editedTodo.id,
-          message: 'Failed to update todo. Please try again.',
+          id: updatedTodo.id,
+          message: 'Unable to update your todo. Please try again.',
         },
       });
     }
   };
 
- 
   // Render
-
   return (
-    <div>
-      <h1>Todo List</h1>
+    <main className={styles.todosPage}>
+      {/* Page Header */}
+      <header className={styles.todosHeader}>
+        <p className={styles.todosEyebrow}>
+          Stay organized
+        </p>
 
+        <h1 className={styles.todosTitle}>
+          Todo List
+        </h1>
+
+        <p className={styles.todosSubtitle}>
+          Keep track of what needs to get done.
+        </p>
+      </header>
+
+      {/* Loading State */}
       {isTodoListLoading && (
-        <p>Loading todos...</p>
+        <div
+          className={`${styles.stateCard} ${styles.loadingState}`}
+          role="status"
+        >
+          <div
+            className={styles.loadingSpinner}
+            aria-hidden="true"
+          />
+
+          <p>Loading your todos...</p>
+        </div>
       )}
 
+      {/* General Error */}
       {error && (
-        <div>
-          <p>{error}</p>
+        <div
+          className={`${styles.stateCard} ${styles.errorState}`}
+          role="alert"
+        >
+          <div className={styles.stateContent}>
+            <strong>Something went wrong</strong>
+
+            <p>{error}</p>
+          </div>
 
           <button
+            className={styles.secondaryButton}
             onClick={() =>
               dispatch({
                 type: TODO_ACTIONS.CLEAR_ERROR,
               })
             }
           >
-            Clear Error
+            Dismiss
           </button>
         </div>
       )}
 
+      {/* Filter Error */}
       {filterError && (
-        <div>
-          <p>{filterError}</p>
+        <div
+          className={`${styles.stateCard} ${styles.filterErrorState}`}
+          role="alert"
+        >
+          <div className={styles.stateContent}>
+            <strong>Unable to apply filters</strong>
 
-          <button
-            onClick={() =>
-              dispatch({
-                type: TODO_ACTIONS.CLEAR_FILTER_ERROR,
-              })
-            }
-          >
-            Clear Filter Error
-          </button>
+            <p>{filterError}</p>
+          </div>
 
-          <button
-            onClick={() =>
-              dispatch({
-                type: TODO_ACTIONS.RESET_FILTERS,
-              })
-            }
-          >
-            Reset Filters
-          </button>
+          <div className={styles.stateActions}>
+            <button
+              className={styles.secondaryButton}
+              onClick={() =>
+                dispatch({
+                  type: TODO_ACTIONS.CLEAR_FILTER_ERROR,
+                })
+              }
+            >
+              Dismiss
+            </button>
+
+            <button
+              className={styles.primaryButton}
+              onClick={() =>
+                dispatch({
+                  type: TODO_ACTIONS.RESET_FILTERS,
+                })
+              }
+            >
+              Reset Filters
+            </button>
+          </div>
         </div>
       )}
 
-      <SortBy
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-        onSortByChange={(newSortBy) =>
-          dispatch({
-            type: TODO_ACTIONS.SET_SORT,
-            payload: {
-              sortBy: newSortBy,
-              sortDirection,
-            },
-          })
-        }
-        onSortDirectionChange={(newSortDirection) =>
-          dispatch({
-            type: TODO_ACTIONS.SET_SORT,
-            payload: {
-              sortBy,
-              sortDirection: newSortDirection,
-            },
-          })
-        }
-      />
+      {/* Controls */}
+      <section
+        className={styles.controlsContainer}
+        aria-label="Todo controls"
+      >
+        {/* Show */}
+        <div className={styles.controlSection}>
+          <h2 className={styles.controlTitle}>
+            Show
+          </h2>
 
-      <StatusFilter />
+          <StatusFilter />
+        </div>
 
-      <FilterInput
-        filterTerm={filterTerm}
-        onFilterChange={handleFilterChange}
-      />
+        {/* Search Todos */}
+        <div className={styles.controlSection}>
+          <h2 className={styles.controlTitle}>
+            Search Todos
+          </h2>
 
-      <TodoForm onAddTodo={addTodo} />
+          <FilterInput
+            filterTerm={filterTerm}
+            onFilterChange={handleFilterChange}
+          />
+        </div>
 
-      <TodoList
-        todoList={todoList}
-        onCompleteTodo={completeTodo}
-        onUpdateTodo={updateTodo}
-        dataVersion={dataVersion}
-        statusFilter={statusFilter}
-      />
-    </div>
+        {/* Sort By */}
+        <div className={styles.controlSection}>
+          <h2 className={styles.controlTitle}>
+            Sort By
+          </h2>
+
+          <SortBy
+            sortBy={sortBy}
+            sortDirection={sortDirection}
+            onSortByChange={(newSortBy) =>
+              dispatch({
+                type: TODO_ACTIONS.SET_SORT,
+                payload: {
+                  sortBy: newSortBy,
+                  sortDirection,
+                },
+              })
+            }
+            onSortDirectionChange={(newSortDirection) =>
+              dispatch({
+                type: TODO_ACTIONS.SET_SORT,
+                payload: {
+                  sortBy,
+                  sortDirection: newSortDirection,
+                },
+              })
+            }
+          />
+        </div>
+      </section>
+
+      {/* Todo List */}
+      <section className={styles.todoSection}>
+        <h2 className={styles.todoSectionTitle}>
+          Todo
+        </h2>
+
+        <TodoList
+          todoList={todoList}
+          onCompleteTodo={completeTodo}
+          onUpdateTodo={updateTodo}
+          dataVersion={dataVersion}
+          statusFilter={statusFilter}
+        />
+      </section>
+    </main>
   );
 }
 

@@ -1,0 +1,109 @@
+/* About Page */
+
+.page {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--spacing-2xl) 0;
+}
+
+/* Header */
+
+.title {
+  margin-bottom: var(--spacing-md);
+
+  color: var(--color-text);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.description {
+  max-width: 680px;
+  margin-bottom: var(--spacing-2xl);
+
+  color: var(--color-text-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1.7;
+}
+
+/* Content Sections */
+
+.section {
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
+
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.sectionTitle {
+  margin-bottom: var(--spacing-lg);
+
+  color: var(--color-text);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Lists */
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.listItem {
+  position: relative;
+
+  padding-left: var(--spacing-lg);
+
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+/* Green bullet */
+
+.listItem::before {
+  content: '';
+
+  position: absolute;
+  top: 0.7em;
+  left: 0;
+
+  width: 7px;
+  height: 7px;
+
+  background-color: var(--color-primary);
+  border-radius: 50%;
+
+  transform: translateY(-50%);
+}
+
+/* Responsive */
+
+@media (max-width: 640px) {
+  .page {
+    padding: var(--spacing-xl) 0;
+  }
+
+  .title {
+    font-size: 1.875rem;
+  }
+
+  .description {
+    font-size: var(--font-size-md);
+    line-height: 1.6;
+  }
+
+  .section {
+    padding: var(--spacing-lg);
+  }
+}

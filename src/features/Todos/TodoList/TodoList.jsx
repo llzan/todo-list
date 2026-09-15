@@ -1,7 +1,8 @@
-// TodoList.jsx (component)
+// TodoList component
 
 import TodoListItem from './TodoListItem';
 import { useMemo } from 'react';
+import styles from './TodoList.module.css';
 
 const TodoList = ({
   todoList,
@@ -48,14 +49,25 @@ const TodoList = ({
 
       case 'all':
       default:
-        return 'Add todo above to get started.';
+        return 'Add a todo above to get started.';
     }
   };
 
   return filteredTodoList.todos.length === 0 ? (
-    <p>{getEmptyMessage()}</p>
+    <div className={styles.emptyState}>
+      <div
+        className={styles.emptyIcon}
+        aria-hidden="true"
+      >
+        ✓
+      </div>
+
+      <h3>No todos here</h3>
+
+      <p>{getEmptyMessage()}</p>
+    </div>
   ) : (
-    <ul>
+    <ul className={styles.todoList}>
       {filteredTodoList.todos.map((todo) => (
         <TodoListItem
           key={todo.id}

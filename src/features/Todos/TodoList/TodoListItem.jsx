@@ -1,88 +1,179 @@
-// TodoListItem.jsx (component)
+// TodoListItem Component
 
 import { useState, useRef } from 'react';
 import TextInputWithLabel from '../../../shared/TextInputWithLabel';
-import { isValidTodoTitle } from '../../../utils/todoValidation';
+import {
+  validateTodoTitle,
+  MAX_TODO_TITLE_LENGTH,
+} from '../../../utils/todoValidation';
+import styles from './TodoListItem.module.css';
 
-function TodoListItem({ todo, onCompleteTodo, onUpdateTodo }) {
-    const [isEditing, setIsEditing] = useState(false);
-    const [workingTitle, setWorkingTitle] = useState(todo.title);
-    const inputRef = useRef(null);
+function TodoListItem({
+  todo,
+  onCompleteTodo,
+  onUpdateTodo,
+}) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [workingTitle, setWorkingTitle] = useState(
+    todo.title
+  );
+  const [validationError, setValidationError] = useState('');
 
-    function handleEdit(event) {
-        setWorkingTitle(event.target.value);
+  const inputRef = useRef(null);
+
+  function handleEdit(event) {
+    const value = event.target.value;
+
+    setWorkingTitle(value);
+
+    if (validationError) {
+      setValidationError('');
     }
+  }
 
-    function handleCancel() {
-        setWorkingTitle(todo.title);
-        setIsEditing(false);
-    }
+  function handleStartEditing() {
+    setWorkingTitle(todo.title);
+    setValidationError('');
+    setIsEditing(true);
 
-    function handleUpdate(event) {
-        if (!isEditing) return;
+    // Focus after React renders the input.
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
+  }
 
-        event.preventDefault();
+  function handleCancel() {
+    setWorkingTitle(todo.title);
+    setValidationError('');
+    setIsEditing(false);
+  }
 
-        if (!isValidTodoTitle(workingTitle)) return;
+  function handleUpdate(event) {
+    if (!isEditing) return;
 
-        onUpdateTodo({
-            ...todo,
-            title: workingTitle
-        });
+    event.preventDefault();
 
-        setIsEditing(false);
-    }
-
-    return (
-        <li>
-            <form onSubmit={handleUpdate}>
-                {isEditing ? (
-                    <>
-                        <TextInputWithLabel
-                            elementId={`editTodo${todo.id}`}
-                            labelText="Todo"
-                            ref={inputRef}
-                            value={workingTitle}
-                            onChange={handleEdit}
-                        />
-
-                        <button
-                            type="button"
-                            onClick={handleCancel}
-                        >
-                            Cancel
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={handleUpdate}
-                            disabled={!isValidTodoTitle(workingTitle)}
-                        >
-                            Update
-                        </button>
-                    </>
-                ) : (
-                    <>
-                        <label>
-                            <input
-                                type="checkbox"
-                                id={`checkbox${todo.id}`}
-                                checked={todo.isCompleted}
-                                onChange={() => onCompleteTodo(todo.id)}
-                            />
-                        </label>
-
-                        <span onClick={() => setIsEditing(true)}>
-                            {todo.title}
-                        </span>
-                    </>
-                )}
-            </form>
-        </li>
+    const validation = validateTodoTitle(
+      workingTitle
     );
-}
 
+    if (!validation.valid) {
+      setValidationError(validation.error);
+      inputRef.current?.focus();
+      return;
+    }
 
+    onUpdateTodo({
+      ...todo,
+      title: validation.value,
+    });
+
+    setValidationError('');
+    setIsEditing(false);
+  }
+
+  return (
+    <li className={styles.todoItem}>
+      <form
+        className={styles.todoForm}
+        onSubmit={handleUpdate}
+      >
+        {isEditing ? (
+          <div className={styles.editMode}>
+            <div className={styles.editInput}>
+              <TextInputWithLabel
+                elementId={`editTodo${todo.id}`}
+                labelText="Todo"
+                ref={inputRef}
+                value={workingTitle}
+                onChange={handleEdit}
+                required
+                maxLength={MAX_TODO_TITLE_LENGTH}
+                aria-invalid={Boolean(validationError)}
+                aria-describedby={
+                  validationError
+                    ? `editTodoError${todo.id} editTodoCount${todo.id}`
+                    : `editTodoCount${todo.id}`
+                }
+              />
+
+              <p id={`editTodoCount${todo.id}`}>
+                {workingTitle.length} / {MAX_TODO_TITLE_LENGTH}
+              </p>
+
+              {validationError && (
+                <p
+                  id={`editTodoError${todo.id}`}
+                  role="alert"
+                >
+                  {validationError}
+                </p>
+              )}
+            </div>
+
+            <div className={styles.editActions}>
+              <button
+                className={styles.cancelButton}
+                type="button"
+                onClick={handleCancel}
+              >
+                Cancel
+              </button>
+
+              <button
+                className={styles.updateButton}
+                type="submit"
+              >
+                Update
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className={styles.todoContent}>
+            <label
+              className={styles.checkboxLabel}
+              htmlFor={`checkbox${todo.id}`}
+            >
+              <input
+                className={styles.checkbox}
+                type="checkbox"
+                id={`checkbox${todo.id}`}
+                checked={todo.isCompleted}
+                onChange={() =>
+                  onCompleteTodo(todo.id)
+                }
+              />
+
+              <span
+                className={styles.checkmark}
+                aria-hidden="true"
+              />
+            </label>
+
+            <button
+              className={`${styles.todoTitle} ${
+                todo.isCompleted
+                  ? styles.completed
+                  : ''
+              }`}
+              type="button"
+              onClick={handleStartEditing}
+            >
+              {todo.title}
+            </button>
+
+            <button
+              className={styles.editButton}
+              type="button"
+              onClick={handleStartEditing}
+            >
+              Edit
+            </button>
+          </div>
+        )}
+      </form>
+    </li>
+  );
+};
 
 export default TodoListItem;
-
