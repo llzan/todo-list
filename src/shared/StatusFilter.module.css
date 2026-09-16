@@ -1,0 +1,49 @@
+
+.statusFilter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.button,
+.activeButton {
+  padding: var(--spacing-sm) var(--spacing-md);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+
+  background-color: var(--color-surface);
+  color: var(--color-text);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+
+  transition:
+    background-color var(--transition),
+    border-color var(--transition),
+    color var(--transition),
+    box-shadow var(--transition);
+}
+
+.button:hover {
+  border-color: var(--color-primary);
+  background-color: var(--color-accent-light);
+}
+
+.button:focus-visible,
+.activeButton:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.activeButton {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+}
+
+.activeButton:hover {
+  border-color: var(--color-primary-hover);
+  background-color: var(--color-primary-hover);
+}

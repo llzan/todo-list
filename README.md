@@ -11,6 +11,8 @@ To run the project enter the following command: "npm run dev". The result will g
 
 # NOT DEPLOYING
 
+    Not currently deployed. The application can be run locally using the instructions below.
+
 # FEATURES LIST
 
     - user registration and authentication
@@ -87,7 +89,7 @@ To run the project enter the following command: "npm run dev". The result will g
         - npm run build = creates optimized production build
         - npm run preview = runs the production build locally so it can be tested before deployment
 
-# DESIGN DECISIONS
+# STYLE DOCUMENTATION / DESIGN DECISIONS
 
     ## The application design uses consistent design system built around reusable CSS variables and CSS modules.
         - Global colors, spacing, typography, borders, and transitions are defined in variables.css
@@ -114,7 +116,8 @@ To run the project enter the following command: "npm run dev". The result will g
 
 # LICENSE INFORMATION
 
-    ## Not applicable
+    This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
+
 
 # CONTACT INFORMATION
 

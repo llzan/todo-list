@@ -44,9 +44,9 @@ function TodosPage() {
 
   const debouncedFilterTerm = useDebounce(filterTerm, 300);
 
-  // --------------------------------------------------
+
   // Filter
-  // --------------------------------------------------
+ 
 
   const handleFilterChange = (newTerm) => {
     dispatch({
@@ -57,9 +57,9 @@ function TodosPage() {
     });
   };
 
-  // --------------------------------------------------
+ 
   // Fetch todos
-  // --------------------------------------------------
+
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -134,9 +134,9 @@ function TodosPage() {
     dataVersion,
   ]);
 
-  // --------------------------------------------------
+
   // Add todo
-  // --------------------------------------------------
+
 
   const addTodo = async (todoTitle) => {
     const validation = validateTodoTitle(todoTitle);
@@ -207,9 +207,9 @@ function TodosPage() {
     }
   };
 
-  // --------------------------------------------------
+ 
   // Complete todo
-  // --------------------------------------------------
+
 
   const completeTodo = async (id) => {
     // Optimistic update
@@ -259,9 +259,9 @@ function TodosPage() {
     }
   };
 
-  // --------------------------------------------------
+
   // Update todo
-  // --------------------------------------------------
+
 
   const updateTodo = async (editedTodo) => {
     const validation = validateTodoTitle(editedTodo.title);
@@ -333,9 +333,9 @@ function TodosPage() {
     }
   };
 
-  // --------------------------------------------------
+ 
   // Render
-  // --------------------------------------------------
+ 
 
   return (
     <main className={styles.todosPage}>

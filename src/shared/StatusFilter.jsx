@@ -1,34 +1,78 @@
 // URL BASED STATUS FILTERING
 
 import { useSearchParams } from 'react-router';
+import styles from './StatusFilter.module.css';
 
 function StatusFilter() {
   const [searchParams, setSearchParams] = useSearchParams();
+
   const currentStatus = searchParams.get('status') || 'all';
 
   const handleStatusChange = (status) => {
+    const newParams = new URLSearchParams(searchParams);
+
     if (status === 'all') {
-      // Remove status param for 'all' to keep URL clean
-      searchParams.delete('status');
+      // Remove status parameter for the All Todos view.
+      newParams.delete('status');
     } else {
-      searchParams.set('status', status);
+      newParams.set('status', status);
     }
-    setSearchParams(searchParams);
+
+    setSearchParams(newParams);
   };
 
   return (
-    <div>
-      <label htmlFor='statusFilter'>Show:</label>
-      <select
-        id='statusFilter'
-        value={currentStatus}
-        onChange={(e) => handleStatusChange(e.target.value)}
+    <nav
+      className={styles.statusFilter}
+      aria-label="Todo status navigation"
+    >
+      <button
+        type="button"
+        className={
+          currentStatus === 'all'
+            ? styles.activeButton
+            : styles.button
+        }
+        onClick={() => handleStatusChange('all')}
+        aria-current={
+          currentStatus === 'all' ? 'page' : undefined
+        }
       >
-        <option value='all'>All Todos</option>
-        <option value='active'>Active Todos</option>
-        <option value='completed'>Completed Todos</option>
-      </select>
-    </div>
+        All Todos
+      </button>
+
+      <button
+        type="button"
+        className={
+          currentStatus === 'active'
+            ? styles.activeButton
+            : styles.button
+        }
+        onClick={() => handleStatusChange('active')}
+        aria-current={
+          currentStatus === 'active' ? 'page' : undefined
+        }
+      >
+        Active Todos
+      </button>
+
+      <button
+        type="button"
+        className={
+          currentStatus === 'completed'
+            ? styles.activeButton
+            : styles.button
+        }
+        onClick={() => handleStatusChange('completed')}
+        aria-current={
+          currentStatus === 'completed'
+            ? 'page'
+            : undefined
+        }
+      >
+        Completed Todos
+      </button>
+    </nav>
   );
 }
 
