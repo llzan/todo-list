@@ -5,6 +5,7 @@ import {
   validateFilter,
   MAX_FILTER_LENGTH,
 } from '../utils/todoValidation';
+import styles from './FilterInput.module.css';
 
 function FilterInput({ filterTerm, onFilterChange }) {
   const [filterError, setFilterError] = useState('');
@@ -24,12 +25,16 @@ function FilterInput({ filterTerm, onFilterChange }) {
   };
 
   return (
-    <div>
-      <label htmlFor="filterInput">
-        Search todos:
+    <div className={styles.filterInput}>
+      <label
+        className={styles.visuallyHidden}
+        htmlFor="filterInput"
+      >
+        Search todos
       </label>
 
       <input
+        className={styles.input}
         id="filterInput"
         type="search"
         value={filterTerm}
@@ -39,19 +44,24 @@ function FilterInput({ filterTerm, onFilterChange }) {
         aria-invalid={Boolean(filterError)}
         aria-describedby={
           filterError
-            ? 'filterInputError filterInputCount'
+            ? 'filterInputCount filterInputError'
             : 'filterInputCount'
         }
       />
 
-      <p id="filterInputCount">
-        {filterTerm.length} / {MAX_FILTER_LENGTH}
+      <p
+        className={styles.characterCount}
+        id="filterInputCount"
+      >
+        {filterTerm.length} / {MAX_FILTER_LENGTH} characters
       </p>
 
       {filterError && (
         <p
+          className={styles.error}
           id="filterInputError"
           role="alert"
+          aria-live="assertive"
         >
           {filterError}
         </p>

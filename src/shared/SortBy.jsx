@@ -1,13 +1,16 @@
 // SortBy component
 
+import styles from './SortBy.module.css';
+
 function SortBy({
-    sortBy,
-    sortDirection,
-    onSortByChange,
-    onSortDirectionChange,
-  }) {
-    return (
-      <div className="sortBy">
+  sortBy,
+  sortDirection,
+  onSortByChange,
+  onSortDirectionChange,
+}) {
+  return (
+    <div className={styles.sortBy}>
+      <div className={styles.control}>
         <label htmlFor="sortBy">Sort by</label>
         <select
           id="sortBy"
@@ -17,7 +20,9 @@ function SortBy({
           <option value="createdAt">Created At</option>
           <option value="title">Title</option>
         </select>
+      </div>
 
+      <div className={styles.control}>
         <label htmlFor="sortDirection">Order</label>
         <select
           id="sortDirection"
@@ -28,7 +33,8 @@ function SortBy({
           <option value="desc">Descending</option>
         </select>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
-  export default SortBy;
+export default SortBy;

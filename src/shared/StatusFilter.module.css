@@ -1,3 +1,4 @@
+/* STATUS FILTER */
 
 .statusFilter {
   display: flex;
@@ -5,8 +6,16 @@
   gap: var(--spacing-sm);
 }
 
+
+/* FILTER BUTTONS */
+
 .button,
 .activeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 44px;
   padding: var(--spacing-sm) var(--spacing-md);
 
   border: 1px solid var(--color-border);
@@ -15,20 +24,49 @@
   background-color: var(--color-surface);
   color: var(--color-text);
 
+  font-family: var(--font-family);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
+
+  cursor: pointer;
 
   transition:
     background-color var(--transition),
     border-color var(--transition),
     color var(--transition),
-    box-shadow var(--transition);
+    box-shadow var(--transition),
+    transform var(--transition);
 }
+
+
+/* DEFAULT BUTTON */
 
 .button:hover {
   border-color: var(--color-primary);
   background-color: var(--color-accent-light);
+  color: var(--color-text);
+  transform: translateY(-1px);
 }
+
+
+/* ACTIVE BUTTON */
+
+.activeButton {
+  border-color: var(--color-primary-hover);
+  background-color: var(--color-primary-hover);
+  color: #ffffff;
+  box-shadow: var(--shadow-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.activeButton:hover {
+  border-color: #15803d;
+  background-color: #15803d;
+  transform: translateY(-1px);
+}
+
+
+/* KEYBOARD FOCUS */
 
 .button:focus-visible,
 .activeButton:focus-visible {
@@ -36,14 +74,28 @@
   outline-offset: 2px;
 }
 
-.activeButton {
-  border-color: var(--color-primary);
-  background-color: var(--color-primary);
-  color: var(--color-text);
-  box-shadow: var(--shadow-sm);
+
+/* DISABLED STATE */
+
+.button:disabled,
+.activeButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
-.activeButton:hover {
-  border-color: var(--color-primary-hover);
-  background-color: var(--color-primary-hover);
+
+/* RESPONSIVE */
+
+@media (max-width: 480px) {
+  .statusFilter {
+    width: 100%;
+  }
+
+  .button,
+  .activeButton {
+    flex: 1;
+    min-width: 0;
+  }
 }
+

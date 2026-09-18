@@ -4,18 +4,18 @@
   width: 100%;
   max-width: 860px;
   margin: 0 auto;
-  padding: 64px 0;
+  padding: var(--spacing-2xl) 0;
 }
 
 
 /* PAGE HEADER */
 
 .todosHeader {
-  margin-bottom: 40px;
+  margin-bottom: var(--spacing-xl);
 }
 
 .todosEyebrow {
-  margin-bottom: 8px;
+  margin-bottom: var(--spacing-sm);
 
   color: var(--color-primary);
   font-size: var(--font-size-sm);
@@ -32,7 +32,7 @@
 }
 
 .todosSubtitle {
-  margin-top: 12px;
+  margin-top: var(--spacing-sm);
 
   color: var(--color-text-muted);
   font-size: var(--font-size-md);
@@ -45,13 +45,13 @@
 .controlsContainer {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--spacing-md);
 
-  margin-bottom: 32px;
+  margin-bottom: var(--spacing-xl);
 }
 
 .controlSection {
-  padding: 20px;
+  padding: var(--spacing-md);
 
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -61,11 +61,11 @@
 }
 
 .controlTitle {
-  margin-bottom: 12px;
+  margin-bottom: var(--spacing-sm);
 
   color: var(--color-text);
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
 }
 
 
@@ -91,11 +91,11 @@
 }
 
 .todoSectionTitle {
-  padding: 20px;
+  padding: var(--spacing-md);
 
   color: var(--color-text);
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
 
   border-bottom: 1px solid var(--color-border);
 }
@@ -107,10 +107,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--spacing-md);
 
-  margin-bottom: 24px;
-  padding: 20px;
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
 
   border-radius: var(--radius-md);
 }
@@ -121,7 +121,7 @@
 
 .stateContent strong {
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: var(--spacing-xs);
 }
 
 .stateContent p {
@@ -161,14 +161,14 @@
 
 .errorState,
 .filterErrorState {
-  color: #991b1b;
+  color: var(--color-danger-dark);
   background-color: var(--color-danger-light);
-  border: 1px solid #fecaca;
+  border: 1px solid var(--color-danger-border);
 }
 
 .errorState p,
 .filterErrorState p {
-  color: #b91c1c;
+  color: var(--color-danger-dark);
 }
 
 
@@ -177,7 +177,7 @@
 .stateActions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: var(--spacing-sm);
 }
 
 
@@ -185,12 +185,13 @@
 
 .primaryButton,
 .secondaryButton {
-  padding: 10px 16px;
+  min-height: 44px;
+  padding: var(--spacing-sm) var(--spacing-md);
 
   border-radius: var(--radius-sm);
 
   font-size: var(--font-size-sm);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 
   transition:
     background-color var(--transition),
@@ -220,6 +221,12 @@
   transform: translateY(-1px);
 }
 
+.primaryButton:focus-visible,
+.secondaryButton:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
 .primaryButton:disabled,
 .secondaryButton:disabled {
   opacity: 0.5;
@@ -240,10 +247,9 @@
   }
 }
 
-
 @media (max-width: 480px) {
   .todosPage {
-    padding: 32px 0;
+    padding: var(--spacing-xl) 0;
   }
 
   .todosTitle {
@@ -251,7 +257,7 @@
   }
 
   .controlSection {
-    padding: 16px;
+    padding: var(--spacing-md);
   }
 
   .stateCard {
