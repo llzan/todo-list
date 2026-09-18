@@ -1,6 +1,4 @@
-/* =================================
-   TODO ITEM
-   ================================= */
+/* TODO ITEM */
 
 .todoItem {
   border-bottom: 1px solid var(--color-border);
@@ -15,23 +13,21 @@
 }
 
 
-/* =================================
-   TODO CONTENT
-   ================================= */
+/* TODO CONTENT */
 
 .todoContent {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--spacing-md);
 
   min-height: 72px;
-  padding: 16px 20px;
+  padding: var(--spacing-md) 20px;
 
   transition: background-color var(--transition);
 }
 
 .todoContent:hover {
-  background-color: #f8fafc;
+  background-color: var(--color-background);
 }
 
 
@@ -46,8 +42,8 @@
 
   flex-shrink: 0;
 
-  width: 24px;
-  height: 24px;
+  width: 44px;
+  height: 44px;
 
   cursor: pointer;
 }
@@ -68,7 +64,7 @@
   height: 20px;
 
   background-color: var(--color-surface);
-  border: 2px solid #cbd5e1;
+  border: 2px solid var(--color-border);
   border-radius: 6px;
 
   transition:
@@ -77,8 +73,9 @@
     box-shadow var(--transition);
 }
 
-
-/* Checked state */
+.checkboxLabel:hover .checkmark {
+  border-color: var(--color-primary);
+}
 
 .checkbox:checked + .checkmark {
   background-color: var(--color-primary);
@@ -90,8 +87,8 @@
 
   position: absolute;
 
-  left: 8px;
-  top: 4px;
+  left: 19px;
+  top: 15px;
 
   width: 5px;
   height: 10px;
@@ -102,19 +99,9 @@
   transform: rotate(45deg);
 }
 
-
-/* Keyboard focus */
-
 .checkbox:focus-visible + .checkmark {
-  outline: 3px solid rgba(79, 70, 229, 0.25);
+  outline: 3px solid var(--color-focus);
   outline-offset: 3px;
-}
-
-
-/* Hover */
-
-.checkboxLabel:hover .checkmark {
-  border-color: var(--color-primary);
 }
 
 
@@ -123,12 +110,15 @@
 .todoTitle {
   flex: 1;
   min-width: 0;
-  padding: 0;
+
+  min-height: 44px;
+  padding: var(--spacing-sm) 0;
 
   color: var(--color-text);
-  background: none;
+  background: transparent;
   border: none;
 
+  font-family: var(--font-family);
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-medium);
   line-height: 1.5;
@@ -145,6 +135,12 @@
   color: var(--color-primary);
 }
 
+.todoTitle:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
 .todoTitle.completed {
   color: var(--color-text-muted);
   font-weight: var(--font-weight-regular);
@@ -155,17 +151,25 @@
 /* EDIT BUTTON */
 
 .editButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
   flex-shrink: 0;
 
-  padding: 8px 12px;
+  min-height: 44px;
+  padding: var(--spacing-sm) 12px;
 
   color: var(--color-secondary);
   background-color: transparent;
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
 
+  font-family: var(--font-family);
   font-size: var(--font-size-sm);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
+
+  cursor: pointer;
 
   transition:
     color var(--transition),
@@ -175,12 +179,12 @@
 
 .editButton:hover {
   color: var(--color-primary);
-  background-color: #eef2ff;
-  border-color: #c7d2fe;
+  background-color: var(--color-accent-light);
+  border-color: var(--color-border);
 }
 
 .editButton:focus-visible {
-  outline: 3px solid rgba(79, 70, 229, 0.25);
+  outline: 3px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -190,9 +194,9 @@
 .editMode {
   display: flex;
   align-items: flex-end;
-  gap: 16px;
+  gap: var(--spacing-md);
 
-  padding: 16px 20px;
+  padding: var(--spacing-md) 20px;
 }
 
 .editInput {
@@ -200,9 +204,65 @@
   min-width: 0;
 }
 
+.inputLabel {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.input {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--spacing-sm) 12px;
+
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.input:hover {
+  border-color: var(--color-primary);
+}
+
+.input:focus-visible {
+  border-color: var(--color-primary);
+  outline: 3px solid var(--color-focus);
+  outline-offset: 1px;
+}
+
+.input[aria-invalid='true'] {
+  border-color: var(--color-danger);
+}
+
+.characterCount {
+  margin: var(--spacing-xs) 0 0;
+
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.error {
+  margin: var(--spacing-xs) 0 0;
+
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
 .editActions {
   display: flex;
-  gap: 8px;
+  gap: var(--spacing-sm);
   flex-shrink: 0;
 }
 
@@ -211,18 +271,27 @@
 
 .cancelButton,
 .updateButton {
-  padding: 9px 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 44px;
+  padding: var(--spacing-sm) 14px;
 
   border-radius: var(--radius-sm);
 
+  font-family: var(--font-family);
   font-size: var(--font-size-sm);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
+
+  cursor: pointer;
 
   transition:
     background-color var(--transition),
     color var(--transition),
     border-color var(--transition),
-    opacity var(--transition);
+    opacity var(--transition),
+    transform var(--transition);
 }
 
 .cancelButton {
@@ -233,29 +302,40 @@
 
 .cancelButton:hover {
   background-color: var(--color-background);
+  border-color: var(--color-secondary);
+}
+
+.cancelButton:focus-visible,
+.updateButton:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
 }
 
 .updateButton {
   color: white;
-  background-color: var(--color-primary);
-  border: 1px solid var(--color-primary);
+  background-color: var(--color-accent);
+  border: 1px solid var(--color-accent);
 }
 
 .updateButton:hover {
-  background-color: var(--color-primary-hover);
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
 }
 
+.cancelButton:disabled,
 .updateButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
 }
 
 
-/* RESPONSIVE*/
+/* RESPONSIVE */
 
 @media (max-width: 600px) {
   .todoContent {
-    gap: 12px;
+    gap: var(--spacing-sm);
     padding: 14px 16px;
   }
 
@@ -274,11 +354,16 @@
   .editActions {
     justify-content: flex-end;
   }
+
+  .cancelButton,
+  .updateButton {
+    flex: 1;
+  }
 }
 
 @media (max-width: 400px) {
   .editButton {
-    padding: 7px 8px;
+    padding: var(--spacing-sm);
   }
 
   .todoContent {

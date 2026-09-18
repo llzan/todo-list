@@ -1,24 +1,27 @@
 // TodoForm.jsx (component)
 
 import { useRef, useState } from 'react';
+
 import TextInputWithLabel from '../../shared/TextInputWithLabel';
+
 import {
   validateTodoTitle,
   MAX_TODO_TITLE_LENGTH,
 } from '../../utils/todoValidation';
 
+import styles from './TodoForm.module.css';
+
 function TodoForm({ onAddTodo }) {
   const [workingTodoTitle, setWorkingTodoTitle] = useState('');
   const [validationError, setValidationError] = useState('');
 
-  const inputRef = useRef();
+  const inputRef = useRef(null);
 
   const handleInputChange = (event) => {
     const value = event.target.value;
 
     setWorkingTodoTitle(value);
 
-    // Clear the error while the user is correcting the input.
     if (validationError) {
       setValidationError('');
     }
@@ -27,9 +30,7 @@ function TodoForm({ onAddTodo }) {
   const handleAddTodo = (event) => {
     event.preventDefault();
 
-    const validation = validateTodoTitle(
-      workingTodoTitle
-    );
+    const validation = validateTodoTitle(workingTodoTitle);
 
     if (!validation.valid) {
       setValidationError(validation.error);
@@ -46,37 +47,56 @@ function TodoForm({ onAddTodo }) {
   };
 
   return (
-    <form onSubmit={handleAddTodo} noValidate>
-      <TextInputWithLabel
-        elementId="todoTitle"
-        labelText="Todo"
-        ref={inputRef}
-        value={workingTodoTitle}
-        onChange={handleInputChange}
-        required
-        maxLength={MAX_TODO_TITLE_LENGTH}
-        aria-invalid={Boolean(validationError)}
-        aria-describedby={
-          validationError
-            ? 'todoTitleError todoTitleCount'
-            : 'todoTitleCount'
-        }
-      />
+    <form
+      className={styles.form}
+      onSubmit={handleAddTodo}
+      noValidate
+    >
+      <div className={styles.inputGroup}>
+        <TextInputWithLabel
+          elementId="todoTitle"
+          name="todoTitle"
+          labelText="New Todo"
+          ref={inputRef}
+          value={workingTodoTitle}
+          onChange={handleInputChange}
+          required
+          maxLength={MAX_TODO_TITLE_LENGTH}
+          autoComplete="off"
+          labelClassName={styles.label}
+          inputClassName={styles.input}
+          aria-invalid={Boolean(validationError)}
+          aria-describedby={
+            validationError
+              ? 'todoTitleCount todoTitleError'
+              : 'todoTitleCount'
+          }
+        />
 
-      <p id="todoTitleCount">
-        {workingTodoTitle.length} / {MAX_TODO_TITLE_LENGTH}
-      </p>
-
-      {validationError && (
         <p
-          id="todoTitleError"
-          role="alert"
+          id="todoTitleCount"
+          className={styles.characterCount}
         >
-          {validationError}
+          {workingTodoTitle.length} / {MAX_TODO_TITLE_LENGTH}{' '}
+          characters
         </p>
-      )}
 
-      <button type="submit">
+        {validationError && (
+          <p
+            id="todoTitleError"
+            className={styles.error}
+            role="alert"
+            aria-live="assertive"
+          >
+            {validationError}
+          </p>
+        )}
+      </div>
+
+      <button
+        className={styles.submitButton}
+        type="submit"
+      >
         Add Todo
       </button>
     </form>
@@ -84,3 +104,4 @@ function TodoForm({ onAddTodo }) {
 }
 
 export default TodoForm;
+

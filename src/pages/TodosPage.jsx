@@ -1,14 +1,17 @@
+import { useEffect, useReducer } from 'react';
+import { useSearchParams } from 'react-router';
+
 import styles from './TodosPage.module.css';
 
 import TodoList from '../features/Todos/TodoList/TodoList';
 import TodoForm from '../features/Todos/TodoForm';
-import { useEffect, useReducer } from 'react';
 import SortBy from '../shared/SortBy';
 import FilterInput from '../shared/FilterInput';
-import useDebounce from '../utils/useDebounce';
-import { useAuth } from '../contexts/AuthContext';
-import { useSearchParams } from 'react-router';
 import StatusFilter from '../shared/StatusFilter';
+
+import useDebounce from '../utils/useDebounce';
+import { validateTodoTitle } from '../utils/todoValidation';
+import { useAuth } from '../contexts/AuthContext';
 
 import {
   todoReducer,
@@ -16,11 +19,8 @@ import {
   TODO_ACTIONS,
 } from '../reducers/todoReducer';
 
-import { validateTodoTitle } from '../utils/todoValidation';
-
 function TodosPage() {
   const { token } = useAuth();
-
   const [searchParams] = useSearchParams();
 
   const [state, dispatch] = useReducer(
@@ -39,12 +39,11 @@ function TodosPage() {
     filterError,
   } = state;
 
-  // Get status filter from URL, default to 'all'
+  // Read the status filter from the URL.
   const statusFilter = searchParams.get('status') || 'all';
 
   const debouncedFilterTerm = useDebounce(filterTerm, 300);
 
-  // Filter
   const handleFilterChange = (newTerm) => {
     dispatch({
       type: TODO_ACTIONS.SET_FILTER,
@@ -54,7 +53,6 @@ function TodosPage() {
     });
   };
 
-  // Fetch todos
   useEffect(() => {
     const fetchTodos = async () => {
       dispatch({
@@ -97,9 +95,7 @@ function TodosPage() {
             todos: data.tasks,
           },
         });
-      } catch (error) {
-        console.error('Todo fetch failed:', error);
-
+      } catch {
         const isFilterError =
           Boolean(debouncedFilterTerm) ||
           sortBy !== 'createdAt' ||
@@ -128,7 +124,6 @@ function TodosPage() {
     dataVersion,
   ]);
 
-  // Add todo
   const addTodo = async (todoTitle) => {
     const validation = validateTodoTitle(todoTitle);
 
@@ -149,7 +144,8 @@ function TodosPage() {
       isCompleted: false,
     };
 
-    // Optimistic update
+    // Add the todo immediately for a responsive UI, then replace
+    // the temporary todo with the saved server response.
     dispatch({
       type: TODO_ACTIONS.ADD_TODO_START,
       payload: {
@@ -184,10 +180,8 @@ function TodosPage() {
           todo: savedTodo,
         },
       });
-    } catch (error) {
-      console.error('Add todo failed:', error);
-
-      // Roll back optimistic update
+    } catch {
+      // Remove the temporary todo if the server request fails.
       dispatch({
         type: TODO_ACTIONS.ADD_TODO_ERROR,
         payload: {
@@ -198,9 +192,8 @@ function TodosPage() {
     }
   };
 
-  // Complete todo
   const completeTodo = async (id) => {
-    // Optimistic update
+    // Update the UI immediately while the server request is pending.
     dispatch({
       type: TODO_ACTIONS.COMPLETE_TODO_START,
       payload: {
@@ -234,10 +227,7 @@ function TodosPage() {
           todo: updatedTodo,
         },
       });
-    } catch (error) {
-      console.error('Complete todo failed:', error);
-
-      // Roll back optimistic update
+    } catch {
       dispatch({
         type: TODO_ACTIONS.COMPLETE_TODO_ERROR,
         payload: {
@@ -248,7 +238,6 @@ function TodosPage() {
     }
   };
 
-  // Update todo
   const updateTodo = async (editedTodo) => {
     const validation = validateTodoTitle(editedTodo.title);
 
@@ -269,7 +258,8 @@ function TodosPage() {
       title: validation.value,
     };
 
-    // Optimistic update
+    // Update the displayed todo immediately while the server request
+    // is pending, then replace it with the saved server response.
     dispatch({
       type: TODO_ACTIONS.UPDATE_TODO_START,
       payload: {
@@ -306,10 +296,7 @@ function TodosPage() {
           todo: savedTodo,
         },
       });
-    } catch (error) {
-      console.error('Update todo failed:', error);
-
-      // Roll back optimistic update
+    } catch {
       dispatch({
         type: TODO_ACTIONS.UPDATE_TODO_ERROR,
         payload: {
@@ -320,29 +307,37 @@ function TodosPage() {
     }
   };
 
-  // Render
   return (
     <main className={styles.todosPage}>
-      {/* Page Header */}
       <header className={styles.todosHeader}>
-        <p className={styles.todosEyebrow}>
-          Stay organized
-        </p>
+        <p className={styles.todosEyebrow}>Stay organized</p>
 
-        <h1 className={styles.todosTitle}>
-          Todo List
-        </h1>
+        <h1 className={styles.todosTitle}>Todo List</h1>
 
         <p className={styles.todosSubtitle}>
           Keep track of what needs to get done.
         </p>
       </header>
 
-      {/* Loading State */}
+      <section
+        className={styles.addTodoSection}
+        aria-labelledby="add-todo-heading"
+      >
+        <h2
+          id="add-todo-heading"
+          className={styles.todoSectionTitle}
+        >
+          Add a Todo
+        </h2>
+
+        <TodoForm onAddTodo={addTodo} />
+      </section>
+
       {isTodoListLoading && (
         <div
           className={`${styles.stateCard} ${styles.loadingState}`}
           role="status"
+          aria-live="polite"
         >
           <div
             className={styles.loadingSpinner}
@@ -353,7 +348,6 @@ function TodosPage() {
         </div>
       )}
 
-      {/* General Error */}
       {error && (
         <div
           className={`${styles.stateCard} ${styles.errorState}`}
@@ -367,6 +361,7 @@ function TodosPage() {
 
           <button
             className={styles.secondaryButton}
+            type="button"
             onClick={() =>
               dispatch({
                 type: TODO_ACTIONS.CLEAR_ERROR,
@@ -378,7 +373,6 @@ function TodosPage() {
         </div>
       )}
 
-      {/* Filter Error */}
       {filterError && (
         <div
           className={`${styles.stateCard} ${styles.filterErrorState}`}
@@ -393,6 +387,7 @@ function TodosPage() {
           <div className={styles.stateActions}>
             <button
               className={styles.secondaryButton}
+              type="button"
               onClick={() =>
                 dispatch({
                   type: TODO_ACTIONS.CLEAR_FILTER_ERROR,
@@ -404,6 +399,7 @@ function TodosPage() {
 
             <button
               className={styles.primaryButton}
+              type="button"
               onClick={() =>
                 dispatch({
                   type: TODO_ACTIONS.RESET_FILTERS,
@@ -416,21 +412,16 @@ function TodosPage() {
         </div>
       )}
 
-      {/* Controls */}
       <section
         className={styles.controlsContainer}
         aria-label="Todo controls"
       >
-        {/* Show */}
         <div className={styles.controlSection}>
-          <h2 className={styles.controlTitle}>
-            Show
-          </h2>
+          <h2 className={styles.controlTitle}>Show</h2>
 
           <StatusFilter />
         </div>
 
-        {/* Search Todos */}
         <div className={styles.controlSection}>
           <h2 className={styles.controlTitle}>
             Search Todos
@@ -442,11 +433,8 @@ function TodosPage() {
           />
         </div>
 
-        {/* Sort By */}
         <div className={styles.controlSection}>
-          <h2 className={styles.controlTitle}>
-            Sort By
-          </h2>
+          <h2 className={styles.controlTitle}>Sort By</h2>
 
           <SortBy
             sortBy={sortBy}
@@ -473,9 +461,14 @@ function TodosPage() {
         </div>
       </section>
 
-      {/* Todo List */}
-      <section className={styles.todoSection}>
-        <h2 className={styles.todoSectionTitle}>
+      <section
+        className={styles.todoSection}
+        aria-labelledby="todo-section-heading"
+      >
+        <h2
+          id="todo-section-heading"
+          className={styles.todoSectionTitle}
+        >
           Todo
         </h2>
 
@@ -492,3 +485,5 @@ function TodosPage() {
 }
 
 export default TodosPage;
+
+

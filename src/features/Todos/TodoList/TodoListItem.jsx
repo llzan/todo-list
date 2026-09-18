@@ -1,11 +1,14 @@
 // TodoListItem Component
 
-import { useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
 import TextInputWithLabel from '../../../shared/TextInputWithLabel';
+
 import {
   validateTodoTitle,
   MAX_TODO_TITLE_LENGTH,
 } from '../../../utils/todoValidation';
+
 import styles from './TodoListItem.module.css';
 
 function TodoListItem({
@@ -21,6 +24,12 @@ function TodoListItem({
 
   const inputRef = useRef(null);
 
+  useEffect(() => {
+    if (isEditing) {
+      inputRef.current?.focus();
+    }
+  }, [isEditing]);
+
   function handleEdit(event) {
     const value = event.target.value;
 
@@ -35,11 +44,6 @@ function TodoListItem({
     setWorkingTitle(todo.title);
     setValidationError('');
     setIsEditing(true);
-
-    // Focus after React renders the input.
-    setTimeout(() => {
-      inputRef.current?.focus();
-    }, 0);
   }
 
   function handleCancel() {
@@ -49,13 +53,13 @@ function TodoListItem({
   }
 
   function handleUpdate(event) {
-    if (!isEditing) return;
+    if (!isEditing) {
+      return;
+    }
 
     event.preventDefault();
 
-    const validation = validateTodoTitle(
-      workingTitle
-    );
+    const validation = validateTodoTitle(workingTitle);
 
     if (!validation.valid) {
       setValidationError(validation.error);
@@ -83,28 +87,38 @@ function TodoListItem({
             <div className={styles.editInput}>
               <TextInputWithLabel
                 elementId={`editTodo${todo.id}`}
+                name={`editTodo${todo.id}`}
                 labelText="Todo"
                 ref={inputRef}
                 value={workingTitle}
                 onChange={handleEdit}
                 required
                 maxLength={MAX_TODO_TITLE_LENGTH}
+                autoComplete="off"
+                labelClassName={styles.inputLabel}
+                inputClassName={styles.input}
                 aria-invalid={Boolean(validationError)}
                 aria-describedby={
                   validationError
-                    ? `editTodoError${todo.id} editTodoCount${todo.id}`
+                    ? `editTodoCount${todo.id} editTodoError${todo.id}`
                     : `editTodoCount${todo.id}`
                 }
               />
 
-              <p id={`editTodoCount${todo.id}`}>
-                {workingTitle.length} / {MAX_TODO_TITLE_LENGTH}
+              <p
+                id={`editTodoCount${todo.id}`}
+                className={styles.characterCount}
+              >
+                {workingTitle.length} / {MAX_TODO_TITLE_LENGTH}{' '}
+                characters
               </p>
 
               {validationError && (
                 <p
                   id={`editTodoError${todo.id}`}
+                  className={styles.error}
                   role="alert"
+                  aria-live="assertive"
                 >
                   {validationError}
                 </p>
@@ -139,9 +153,7 @@ function TodoListItem({
                 type="checkbox"
                 id={`checkbox${todo.id}`}
                 checked={todo.isCompleted}
-                onChange={() =>
-                  onCompleteTodo(todo.id)
-                }
+                onChange={() => onCompleteTodo(todo.id)}
               />
 
               <span
@@ -158,6 +170,7 @@ function TodoListItem({
               }`}
               type="button"
               onClick={handleStartEditing}
+              aria-label={`Edit todo: ${todo.title}`}
             >
               {todo.title}
             </button>
@@ -166,6 +179,7 @@ function TodoListItem({
               className={styles.editButton}
               type="button"
               onClick={handleStartEditing}
+              aria-label={`Edit ${todo.title}`}
             >
               Edit
             </button>
@@ -174,6 +188,6 @@ function TodoListItem({
       </form>
     </li>
   );
-};
+}
 
 export default TodoListItem;

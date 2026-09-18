@@ -1,0 +1,112 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.label {
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.input {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--spacing-sm) var(--spacing-md);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+
+  background-color: var(--color-surface);
+  color: var(--color-text);
+
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition),
+    background-color var(--transition);
+}
+
+.input:hover {
+  border-color: var(--color-primary);
+}
+
+.input:focus-visible {
+  border-color: var(--color-primary);
+  outline: 3px solid var(--color-focus);
+  outline-offset: 1px;
+}
+
+.input[aria-invalid='true'] {
+  border-color: var(--color-danger);
+}
+
+.characterCount {
+  margin: 0;
+
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.error {
+  margin: 0;
+
+  color: var(--color-danger-dark);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.submitButton {
+  align-self: flex-start;
+
+  min-height: 44px;
+  padding: var(--spacing-sm) var(--spacing-md);
+
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+
+  color: white;
+  background-color: var(--color-primary);
+
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+
+  cursor: pointer;
+
+  transition:
+    background-color var(--transition),
+    color var(--transition),
+    transform var(--transition);
+}
+
+.submitButton:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+.submitButton:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 480px) {
+  .submitButton {
+    width: 100%;
+  }
+}

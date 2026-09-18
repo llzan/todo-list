@@ -1,43 +1,28 @@
 // TodoList component
 
-import TodoListItem from './TodoListItem';
 import { useMemo } from 'react';
+import TodoListItem from './TodoListItem';
 import styles from './TodoList.module.css';
 
 const TodoList = ({
   todoList,
   onCompleteTodo,
   onUpdateTodo,
-  dataVersion,
   statusFilter = 'all',
 }) => {
   const filteredTodoList = useMemo(() => {
-    let filteredTodos;
-
     switch (statusFilter) {
       case 'completed':
-        filteredTodos = todoList.filter(
-          (todo) => todo.isCompleted
-        );
-        break;
+        return todoList.filter((todo) => todo.isCompleted);
 
       case 'active':
-        filteredTodos = todoList.filter(
-          (todo) => !todo.isCompleted
-        );
-        break;
+        return todoList.filter((todo) => !todo.isCompleted);
 
       case 'all':
       default:
-        filteredTodos = todoList;
-        break;
+        return todoList;
     }
-
-    return {
-      version: dataVersion,
-      todos: filteredTodos,
-    };
-  }, [todoList, dataVersion, statusFilter]);
+  }, [todoList, statusFilter]);
 
   const getEmptyMessage = () => {
     switch (statusFilter) {
@@ -53,22 +38,26 @@ const TodoList = ({
     }
   };
 
-  return filteredTodoList.todos.length === 0 ? (
-    <div className={styles.emptyState}>
-      <div
-        className={styles.emptyIcon}
-        aria-hidden="true"
-      >
-        ✓
+  if (filteredTodoList.length === 0) {
+    return (
+      <div className={styles.emptyState}>
+        <div
+          className={styles.emptyIcon}
+          aria-hidden="true"
+        >
+          ✓
+        </div>
+
+        <h3>No todos here</h3>
+
+        <p>{getEmptyMessage()}</p>
       </div>
+    );
+  }
 
-      <h3>No todos here</h3>
-
-      <p>{getEmptyMessage()}</p>
-    </div>
-  ) : (
+  return (
     <ul className={styles.todoList}>
-      {filteredTodoList.todos.map((todo) => (
+      {filteredTodoList.map((todo) => (
         <TodoListItem
           key={todo.id}
           todo={todo}
